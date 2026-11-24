@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#1F4E79">
+<title>CBT – Ujian Online</title>
+<style>
+:root{--biru:#1F4E79;--biru2:#2E6DA4;--muda:#EAF1F8;--garis:#D5DEE8;--teks:#1B2733;--abu:#5B6B7B;
+  --hijau:#2E7D32;--hijau-m:#E3F3E4;--kuning:#F2B705;--kuning-m:#FFF6D6;--merah:#C62828;--merah-m:#FDECEC}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.5;color:var(--teks);
+  background:#F3F6FA;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body.kunci-teks{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,select,textarea{-webkit-user-select:text;user-select:text}
+button{font:inherit;cursor:pointer}
+.layar{display:none;min-height:100vh}
+.layar.aktif{display:block}
+.wadah{max-width:560px;margin:0 auto;padding:18px 16px 40px}
+.wadah-lebar{max-width:1180px;margin:0 auto;padding:16px}
+.kartu{background:#fff;border:1px solid var(--garis);border-radius:14px;padding:18px;margin-bottom:14px}
+h1,h2,h3{margin:0 0 6px;line-height:1.25}
+.kecil{font-size:14px;color:var(--abu)}
+.tengah{text-align:center}
+.kepala{background:var(--biru);color:#fff;padding:26px 18px 30px;text-align:center}
+.kepala .sekolah{font-size:14px;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.kepala h1{font-size:26px;margin-top:6px}
+.kepala .sub{font-size:18px;opacity:.95}
+.kepala .meta{margin-top:10px;font-size:14px;opacity:.85}
+.tombol{display:block;width:100%;border:0;border-radius:12px;padding:16px;font-size:18px;font-weight:600;
+  background:var(--biru);color:#fff;margin-top:12px}
+.tombol:active{transform:scale(.99)}
+.tombol.garis{background:#fff;color:var(--biru);border:2px solid var(--biru)}
+.tombol.hijau{background:var(--hijau)}
+.tombol.merah{background:var(--merah)}
+.tombol[disabled]{opacity:.55}
+.tombol-besar{padding:22px 16px;font-size:20px;border-radius:14px}
+.tombol-besar small{display:block;font-weight:400;font-size:14px;opacity:.85}
+.btn{border:1px solid var(--garis);background:#fff;color:var(--biru);border-radius:9px;padding:8px 12px;font-size:15px;font-weight:600}
+.btn.isi{background:var(--biru);color:#fff;border-color:var(--biru)}
+.btn.merah{color:var(--merah);border-color:#E9B4B4}
+.btn.kecil-btn{padding:5px 9px;font-size:13px}
+label{display:block;font-weight:600;margin:12px 0 6px}
+input[type=text],input[type=password],input[type=number],select{width:100%;font-size:18px;padding:13px 12px;border:1.5px solid var(--garis);
+  border-radius:10px;background:#fff;color:var(--teks)}
+input:focus,select:focus{outline:none;border-color:var(--biru2);box-shadow:0 0 0 3px rgba(46,109,164,.18)}
+.info{background:var(--muda);border-left:4px solid var(--biru2);padding:12px 14px;border-radius:8px;font-size:15px;margin:10px 0}
+.info.kuning{background:var(--kuning-m);border-color:var(--kuning)}
+.info.merah{background:var(--merah-m);border-color:var(--merah)}
+.aturan ol{padding-left:22px;margin:8px 0}
+.aturan li{margin-bottom:8px}
+.cek{display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:14px}
+.cek input{width:24px;height:24px;flex:0 0 auto;margin-top:2px}
+.balik{background:none;border:0;color:#fff;font-size:15px;padding:0;margin-bottom:8px;opacity:.9}
+
+/* ---------- Ujian ---------- */
+#layarUjian.aktif{display:flex;flex-direction:column;height:100vh;height:100dvh}
+.u-atas{background:var(--biru);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;gap:8px;flex:0 0 auto}
+.u-atas .nomor{font-size:16px}
+.u-atas .nomor b{font-size:20px}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:20px;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:8px}
+.timer.merah{background:var(--merah);animation:kedip 1s infinite}
+@keyframes kedip{50%{opacity:.75}}
+.u-atas .panel-btn{background:#fff;color:var(--biru);border:0;border-radius:8px;padding:7px 11px;font-weight:700;font-size:15px}
+.u-isi{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 14px 24px}
+.u-isi .bungkus{max-width:720px;margin:0 auto}
+.soal-label{font-size:14px;color:var(--abu);margin-bottom:6px;display:flex;justify-content:space-between}
+.tanda-ragu{background:var(--kuning);color:#3A2E00;border-radius:6px;padding:0 8px;font-weight:700}
+.soal p{margin:0 0 10px;font-size:18px}
+.stimulus{background:var(--muda);border:1px solid #C9D9EA;border-radius:10px;padding:10px 14px;margin:6px 0 12px;font-size:17px}
+.stimulus div{margin:3px 0}
+.tabel-geser{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:6px 0 12px;border:1px solid var(--garis);border-radius:10px;background:#fff}
+.tabel-geser table{border-collapse:collapse;min-width:100%;font-size:16px}
+.tabel-geser th,.tabel-geser td{border:1px solid #B9C6D3;padding:8px 12px;text-align:center;white-space:nowrap}
+.tabel-geser th{background:#E7E6E6}
+.tabel-geser td:first-child,.tabel-geser th:first-child{font-weight:700;text-align:left}
+.geser-info{font-size:13px;color:var(--abu);margin:-8px 0 12px}
+.gbr{display:block;max-width:100%;width:260px;height:auto;margin:6px auto 12px;border:1px solid var(--garis);border-radius:8px;background:#fff}
+.poster-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 12px}
+.poster-grid figure{margin:0;background:#fff;border:1px solid var(--garis);border-radius:10px;padding:6px;text-align:center}
+.poster-grid img{width:100%;height:auto;display:block;border-radius:6px}
+.poster-grid figcaption{font-weight:700;margin-top:4px}
+.ketuk{font-size:13px;color:var(--abu);text-align:center;margin:-6px 0 10px}
+.opsi{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--garis);border-radius:12px;padding:14px 14px;margin:10px 0;
+  font-size:17px;color:var(--teks);display:flex;gap:12px;align-items:flex-start}
+.opsi .huruf{flex:0 0 34px;height:34px;border-radius:50%;border:2px solid var(--biru2);color:var(--biru2);display:flex;align-items:center;justify-content:center;font-weight:700}
+.opsi.pilih{border-color:var(--biru);background:#E6EEF7}
+.opsi.pilih .huruf{background:var(--biru);border-color:var(--biru);color:#fff}
+.u-bawah{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 10px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--garis)}
+.u-bawah button{border:0;border-radius:10px;padding:14px 6px;font-size:16px;font-weight:700}
+#btnKembali{background:#E9EEF4;color:var(--biru)}
+#btnRagu{background:var(--kuning-m);color:#6B5300;border:2px solid var(--kuning)}
+#btnRagu.on{background:var(--kuning);color:#3A2E00}
+#btnLanjut{background:var(--biru);color:#fff}
+#btnLanjut.selesai{background:var(--hijau)}
+.laci{position:fixed;inset:0;background:rgba(10,25,40,.5);display:none;z-index:40}
+.laci.buka{display:block}
+.laci .isi-laci{position:absolute;right:0;top:0;bottom:0;width:min(360px,92vw);background:#fff;padding:16px;overflow-y:auto}
+.grid-no{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.grid-no button{border:2px solid #AFC0D2;background:#fff;border-radius:9px;padding:10px 0;font-weight:700;font-size:16px;color:var(--teks)}
+.grid-no button.dijawab{background:#2E9B4E;border-color:#2E9B4E;color:#fff}
+.grid-no button.ragu{background:var(--kuning);border-color:var(--kuning);color:#3A2E00}
+.grid-no button.kini{outline:3px solid var(--biru);outline-offset:1px}
+.legenda{display:flex;gap:12px;flex-wrap:wrap;font-size:13px}
+.legenda span::before{content:"";display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:5px;vertical-align:-2px;border:2px solid #AFC0D2;background:#fff}
+.legenda .l-h::before{background:#2E9B4E;border-color:#2E9B4E}
+.legenda .l-k::before{background:var(--kuning);border-color:var(--kuning)}
+
+/* ---------- Hasil ---------- */
+.nilai-besar{font-size:64px;font-weight:800;color:var(--biru);line-height:1}
+.statistik{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.statistik div{background:var(--muda);border-radius:10px;padding:10px 4px;text-align:center}
+.statistik b{display:block;font-size:24px}
+.statistik .b b{color:var(--hijau)}.statistik .s b{color:var(--merah)}.statistik .k b{color:var(--abu)}
+
+/* ---------- Modal & overlay ---------- */
+.modal-latar{position:fixed;inset:0;background:rgba(10,25,40,.6);display:none;align-items:center;justify-content:center;z-index:80;padding:18px}
+.modal-latar.buka{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:440px;width:100%;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.modal h3{font-size:20px;margin-bottom:8px}
+.modal.bahaya h3{color:var(--merah)}
+.modal.awas h3{color:#9A6B00}
+.modal .isi{font-size:16px}
+.modal .aksi{display:flex;gap:10px;margin-top:16px}
+.modal .aksi button{flex:1;border:0;border-radius:10px;padding:13px;font-size:16px;font-weight:700;background:var(--biru);color:#fff}
+.modal .aksi button.dua{background:#E9EEF4;color:var(--biru)}
+.modal .aksi button.merah{background:var(--merah)}
+.overlay{position:fixed;inset:0;background:rgba(255,255,255,.94);z-index:90;display:none;align-items:center;justify-content:center;text-align:center;padding:24px}
+.overlay.buka{display:flex}
+.putar{width:46px;height:46px;border:5px solid #D2DEEA;border-top-color:var(--biru);border-radius:50%;animation:putar 1s linear infinite;margin:0 auto 14px}
+@keyframes putar{to{transform:rotate(360deg)}}
+.overlay .j{font-size:19px;font-weight:700;color:var(--biru)}
+.overlay .aman{margin-top:10px;display:inline-block;background:var(--hijau-m);color:var(--hijau);font-weight:700;border-radius:8px;padding:6px 12px}
+.penampil{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:95;display:none;align-items:center;justify-content:center;padding:10px}
+.penampil.buka{display:flex}
+.penampil img{max-width:100%;max-height:92vh;background:#fff;border-radius:6px}
+
+/* ---------- Guru ---------- */
+.g-atas{background:var(--biru);color:#fff}
+.g-atas .wadah-lebar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.g-atas h2{font-size:20px;margin:0}
+.g-atas .btn{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.35)}
+.baris-f{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.baris-f>div{flex:1 1 180px}
+.baris-f label{margin-top:0;font-size:14px}
+.baris-f input,.baris-f select{font-size:16px;padding:10px}
+.ringkas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.ringkas div{background:#fff;border:1px solid var(--garis);border-radius:12px;padding:12px}
+.ringkas span{font-size:13px;color:var(--abu);display:block}
+.ringkas b{font-size:24px;color:var(--biru)}
+.tabel-guru{overflow-x:auto;background:#fff;border:1px solid var(--garis);border-radius:12px}
+.tabel-guru table{border-collapse:collapse;width:100%;font-size:14px}
+.tabel-guru th{background:var(--biru);color:#fff;font-weight:600;padding:9px 8px;text-align:left;white-space:nowrap;position:sticky;top:0}
+.tabel-guru td{border-top:1px solid #E6ECF2;padding:8px;white-space:nowrap}
+.tabel-guru tr.keluar td{background:#FFF1F1}
+.tabel-guru td.n{text-align:center}
+.label{display:inline-block;border-radius:20px;padding:2px 10px;font-size:12.5px;font-weight:700}
+.label.selesai{background:var(--hijau-m);color:var(--hijau)}
+.label.proses{background:#E1ECF8;color:var(--biru2)}
+.label.keluar{background:var(--merah-m);color:var(--merah)}
+.pill{display:inline-block;border-radius:20px;padding:4px 12px;font-weight:800;font-size:14px}
+.pill.buka{background:var(--hijau-m);color:var(--hijau)}
+.pill.tutup{background:var(--merah-m);color:var(--merah)}
+.butir{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px}
+.butir div{border-radius:10px;padding:8px;text-align:center;font-size:13px;font-weight:600}
+.butir b{display:block;font-size:18px}
+.butir .m{background:var(--merah-m);color:var(--merah)}
+.butir .k{background:var(--kuning-m);color:#8A6500}
+.butir .h{background:var(--hijau-m);color:var(--hijau)}
+.butir .x{background:#F0F2F5;color:var(--abu)}
+.pasang ol{padding-left:22px}
+.pasang code{background:#EEF2F6;padding:1px 6px;border-radius:5px;font-size:14px}
+@media (max-width:760px){.ringkas{grid-template-columns:repeat(2,1fr)}.ringkas b{font-size:20px}}
+@media (min-width:900px){body{font-size:16px}}
+textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--garis);border-radius:10px;resize:vertical;-webkit-user-select:text;user-select:text}
+textarea:focus{outline:none;border-color:var(--biru2);box-shadow:0 0 0 3px rgba(46,109,164,.18)}
+.aman{display:inline-block;background:var(--hijau-m);color:var(--hijau);font-weight:700;border-radius:8px;padding:6px 12px;margin-top:10px}
+.gbr-in{max-width:100%;width:auto;max-height:220px;vertical-align:middle;border-radius:6px;margin:4px 0}
+.tabel-gbr td{white-space:normal;vertical-align:top;font-weight:700}
+.tabel-gbr td .gbr-in{display:block;width:150px;max-height:none;margin:6px auto 0}
+.tabel-gbr td:first-child{text-align:center}
+.poster-grid .gbr{width:100%;margin:0}
+.petunjuk-jenis{background:var(--kuning-m);border-radius:8px;padding:8px 12px;font-size:15px;margin:4px 0 6px}
+.opsi.kotak .huruf{border-radius:7px}
+.bs{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.bs-baris{background:#fff;border:2px solid var(--garis);border-radius:12px;padding:12px}
+.bs-teks{margin-bottom:10px}
+.bs-tombol{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bs-tombol button{border:2px solid var(--garis);background:#fff;border-radius:10px;padding:11px;font-weight:700;font-size:16px;color:var(--teks)}
+.bs-tombol button:first-child.pilih{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.bs-tombol button:last-child.pilih{background:var(--merah);border-color:var(--merah);color:#fff}
+body.mode-guru{-webkit-user-select:text;user-select:text}
+.tab-bar{display:flex;gap:4px;padding-top:0;padding-bottom:0;overflow-x:auto}
+.tab{background:transparent;border:0;color:#CFE0F1;padding:12px 16px;font-weight:700;font-size:15px;border-radius:10px 10px 0 0;white-space:nowrap}
+.tab.aktif{background:#F3F6FA;color:var(--biru)}
+.baris-judul{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 12px}
+.baris-judul h3{margin:0}
+.kartu-ujian{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap}
+.ku-kiri{flex:1 1 380px}.ku-kiri h3{margin:2px 0}
+.ku-meta{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:14px;margin-top:8px;color:#34495E}
+.ku-kanan{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.ku-aksi{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.simpan-bar{position:sticky;bottom:0;background:#FFF6D6;border:2px solid var(--kuning);border-radius:12px;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:10px;box-shadow:0 -4px 16px rgba(0,0,0,.08)}
+.simpan-bar span{margin-right:auto;font-weight:700;color:#6B5300}
+.kartu-soal.bermasalah{border-color:#E9B4B4;background:#FFFBFB}
+.ks-atas{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.ks-aksi{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.ks-isi p{font-size:16px !important}
+.ks-opsi{margin:6px 0 0;padding-left:26px}
+.ks-opsi li{margin:3px 0}
+.ks-opsi li.kunci{font-weight:700;color:var(--hijau)}
+.ks-opsi li.kunci::after{content:" ✓ kunci";font-size:12px}
+.tb{color:var(--hijau)}.ts{color:var(--merah)}
+.info.kecil{font-size:13px;padding:6px 10px}
+.lembar{position:fixed;inset:0;background:rgba(10,25,40,.55);z-index:60;display:none;overflow-y:auto;padding:16px}
+.lembar.buka{display:block}
+.lembar-isi{background:#F3F6FA;max-width:1180px;margin:0 auto;border-radius:16px;padding:16px 18px 30px}
+.lembar-kepala{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-16px;background:#F3F6FA;padding:8px 0;z-index:2}
+.lembar-kepala h3{margin:0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.form-grid input{font-size:16px;padding:10px}
+.pilih-kelas{background:#fff;border:1px solid var(--garis);border-radius:10px;padding:10px}
+.pk-baris{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:6px 0;border-bottom:1px dashed #E3E9EF}
+.pk-baris:last-child{border-bottom:0}
+.pk{display:inline-flex;align-items:center;gap:4px;margin:0;font-weight:600}
+.pk input{width:18px;height:18px}
+.form-cek{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;margin-top:12px}
+.form-cek label{font-weight:400;display:flex;gap:8px;align-items:center;margin:6px 0}
+.form-cek input{width:20px;height:20px}
+.editor{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:18px;align-items:start}
+.ed-kiri{background:#fff;border:1px solid var(--garis);border-radius:12px;padding:6px 16px 16px}
+.ed-kanan{position:sticky;top:40px}
+.pratinjau{background:#fff;border:1px solid var(--garis);border-radius:12px;padding:14px;margin-top:6px;max-height:80vh;overflow:auto}
+.seg{display:inline-flex;border:1.5px solid var(--biru2);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:#fff;color:var(--biru2);padding:8px 12px;font-weight:700;font-size:14px}
+.seg button.on{background:var(--biru2);color:#fff}
+.kecil-seg button{padding:7px 10px}
+.ed-opsi{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.ed-opsi textarea{padding:8px 10px}
+.ed-huruf{flex:0 0 40px;height:40px;border-radius:50%;border:2px solid var(--biru2);background:#fff;color:var(--biru2);font-weight:800}
+.ed-huruf.on{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.ed-gbr{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.thumb{position:relative}.thumb img{height:70px;border:1px solid var(--garis);border-radius:6px;background:#fff}
+.thumb button{position:absolute;top:-6px;right:-6px;border:0;background:var(--merah);color:#fff;border-radius:50%;width:22px;height:22px;font-size:12px}
+.ed-bawah{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+details{margin-top:12px;border:1px solid var(--garis);border-radius:10px;padding:4px 12px 10px}
+summary{font-weight:700;cursor:pointer;padding:6px 0;color:var(--biru)}
+.pratinjau-hp{max-width:460px;margin:0 auto}
+code{background:#EEF2F6;padding:1px 6px;border-radius:5px;font-size:13px}
+@media (max-width:860px){.editor{grid-template-columns:1fr}.ed-kanan{position:static}.form-grid,.form-cek{grid-template-columns:1fr}}
+
+
+.opsi .gbr-in{display:block;max-height:170px;max-width:100%;margin:2px 0}
+.ed-opsi-isi{flex:1;display:flex;flex-direction:column;gap:6px}
+.ed-opsi-isi textarea{width:100%}
+.opsi-gbr{display:flex;gap:8px;flex-wrap:wrap}
+.opsi-gbr .thumb img{height:64px}
+.gbr-opsi{position:relative;display:inline-block}
+.gbr-opsi .zoom{position:absolute;right:4px;bottom:6px;background:rgba(255,255,255,.92);border:1px solid var(--garis);border-radius:8px;padding:2px 7px;font-size:15px;line-height:1.4}
+</style>
+</head>
+<body class="kunci-teks">
+
+<!-- ===================== HALAMAN AWAL ===================== -->
+<section id="layarAwal" class="layar">
+  <div class="kepala">
+    <div class="sekolah" id="tSekolah">SMP Negeri 1 Lamongan</div>
+    <h1>Ujian Online (CBT)</h1>
+    <div class="sub">Computer Based Test</div>
+  </div>
+  <div class="wadah">
+    <div id="infoTertunda"></div>
+    <button class="tombol tombol-besar" onclick="bukaLoginSiswa()">Masuk sebagai Siswa<small>Kerjakan ujian</small></button>
+    <button class="tombol tombol-besar garis" onclick="bukaLoginGuru()">Masuk sebagai Guru<small>Kelola ujian, soal &amp; rekap nilai</small></button>
+    <p class="kecil tengah" style="margin-top:22px">Gunakan browser biasa (Chrome). Jangan pakai mode samaran.</p>
+  </div>
+</section>
+
+<!-- ===================== PETUNJUK PEMASANGAN ===================== -->
+<section id="layarPasang" class="layar">
+  <div class="kepala"><h1>Pemasangan CBT</h1><div class="sub">API_URL belum diisi</div></div>
+  <div class="wadah pasang"><div class="kartu"><h3>Langkah pemasangan</h3><ol>
+    <li>Buat Google Spreadsheet baru → <b>Ekstensi → Apps Script</b>.</li>
+    <li>Hapus isi file kode, tempel seluruh isi <b>Code.gs</b>, ganti <code>PIN_GURU</code>, lalu simpan.</li>
+    <li>Pilih fungsi <code>siapkanSheet</code> → <b>Jalankan</b> → izinkan akses.</li>
+    <li><b>Terapkan → Deployment baru → Aplikasi web</b>. Jalankan sebagai: <b>Saya</b>. Akses: <b>Siapa saja</b>.</li>
+    <li>Salin URL Aplikasi Web (berakhiran <code>/exec</code>).</li>
+    <li>Di <b>index.html</b>, cari baris <code>var API_URL</code> lalu tempel URL tersebut di antara tanda kutip.</li>
+    <li>Unggah ke GitHub Pages dengan nama file persis <code>index.html</code>.</li>
+  </ol></div></div>
+</section>
+
+<!-- ===================== LOGIN SISWA ===================== -->
+<section id="layarLoginSiswa" class="layar">
+  <div class="kepala" style="text-align:left">
+    <button class="balik" onclick="keAwal()">← Kembali</button>
+    <h1 style="font-size:22px">Masuk Siswa</h1>
+  </div>
+  <div class="wadah">
+    <div id="bannerLanjut"></div>
+    <div class="kartu">
+      <label for="inNama">Nama lengkap</label>
+      <input type="text" id="inNama" autocomplete="off" maxlength="60" placeholder="Tulis nama lengkap">
+      <label for="inKelas">Kelas</label>
+      <select id="inKelas"></select>
+      <label for="inAbsen">Nomor absen</label>
+      <input type="number" id="inAbsen" inputmode="numeric" min="1" placeholder="Contoh: 12">
+      <label for="inToken">Token <span class="kecil">(isi jika diberikan guru)</span></label>
+      <input type="text" id="inToken" autocomplete="off" maxlength="12" placeholder="Kosongkan jika tidak ada" style="text-transform:uppercase">
+      <button class="tombol" id="btnMasuk" onclick="masukSiswa()">Masuk</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ATURAN ===================== -->
+<section id="layarAturan" class="layar">
+  <div class="kepala" style="text-align:left">
+    <div class="sekolah" id="aMapel"></div>
+    <h1 style="font-size:22px" id="aJudul">Aturan Ujian</h1>
+    <div class="sub" style="font-size:15px" id="aNama"></div>
+  </div>
+  <div class="wadah"><div class="kartu aturan"><ol>
+    <li>Waktu mengerjakan <b id="aDurasi"></b> untuk <b id="aJumlah"></b>. Waktu habis = jawaban dikumpulkan otomatis.</li>
+    <li>Jawaban tersimpan di HP-mu. Internet hanya dipakai saat <b>masuk</b> dan saat <b>kumpul</b>.</li>
+    <li><b>Jangan</b> keluar dari halaman ini, membuka aplikasi lain, menarik notifikasi, memakai layar terbagi (split screen), atau menutup/memuat ulang halaman.</li>
+    <li>Setiap pelanggaran diberi peringatan. Pada pelanggaran ke-<b class="isiMaks">3</b> kamu <b>otomatis dikeluarkan</b> dan jawabanmu langsung dinilai.</li>
+    <li><b>Jangan hapus data browser</b> dan <b>jangan pakai mode samaran (incognito)</b>.</li>
+    <li>Jika halaman tertutup tidak sengaja, buka lagi alamat ujian di HP yang sama lalu tekan <b>Masuk</b> dengan nama, kelas, dan absen yang sama.</li>
+    <li>Tombol <b>Ragu-ragu</b> menandai soal yang ingin kamu periksa lagi.</li>
+  </ol>
+  <label class="cek"><input type="checkbox" id="cekPaham" onchange="$('btnMulai').disabled=!this.checked"> Saya sudah membaca dan siap mengerjakan dengan jujur.</label>
+  <button class="tombol hijau" id="btnMulai" disabled onclick="mulaiMengerjakan()">Mulai Mengerjakan</button>
+  </div></div>
+</section>
+
+<!-- ===================== UJIAN ===================== -->
+<section id="layarUjian" class="layar">
+  <div class="u-atas">
+    <div class="nomor">Soal <b id="noKini">1</b>/<span id="noTotal">0</span></div>
+    <div class="timer" id="timer">--:--</div>
+    <button class="panel-btn" onclick="bukaLaci()">☰ Nomor</button>
+  </div>
+  <div class="u-isi" id="uIsi"><div class="bungkus" id="kontenSoal"></div></div>
+  <div class="u-bawah">
+    <button id="btnKembali" onclick="pindah(-1)">‹ Kembali</button>
+    <button id="btnRagu" onclick="toggleRagu()">Ragu-ragu</button>
+    <button id="btnLanjut" onclick="lanjutAtauSelesai()">Lanjut ›</button>
+  </div>
+</section>
+<div class="laci" id="laci" onclick="if(event.target===this)tutupLaci()">
+  <div class="isi-laci">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h3 style="margin:0">Nomor Soal</h3><button class="btn" onclick="tutupLaci()">Tutup ✕</button>
+    </div>
+    <div class="legenda" style="margin-top:10px"><span class="l-h">Dijawab</span><span class="l-k">Ragu-ragu</span><span>Belum</span></div>
+    <div class="grid-no" id="gridNo"></div>
+    <div class="kecil" id="ringkasLaci"></div>
+    <button class="tombol hijau" onclick="tutupLaci();konfirmasiKumpul()">Kumpulkan Jawaban</button>
+  </div>
+</div>
+
+<section id="layarKirim" class="layar">
+  <div class="kepala"><h1 style="font-size:22px" id="kirimJudul">Mengumpulkan jawaban…</h1></div>
+  <div class="wadah"><div class="kartu tengah" id="kirimIsi"></div></div>
+</section>
+
+<section id="layarHasil" class="layar">
+  <div class="kepala"><div class="sekolah" id="hMapel"></div><h1 style="font-size:22px" id="hJudul"></h1></div>
+  <div class="wadah"><div id="hasilIsi"></div>
+    <button class="tombol garis" onclick="keAwal()">Kembali ke Halaman Awal</button>
+  </div>
+</section>
+
+<!-- ===================== LOGIN GURU ===================== -->
+<section id="layarLoginGuru" class="layar">
+  <div class="kepala" style="text-align:left">
+    <button class="balik" onclick="keAwal()">← Kembali</button>
+    <h1 style="font-size:22px">Masuk Guru</h1>
+  </div>
+  <div class="wadah"><div class="kartu">
+    <label for="inPin">PIN guru</label>
+    <input type="password" id="inPin" inputmode="numeric" autocomplete="off" placeholder="Masukkan PIN" onkeydown="if(event.key==='Enter')masukGuru()">
+    <button class="tombol" onclick="masukGuru()">Masuk</button>
+  </div></div>
+</section>
+
+<!-- ===================== MODE GURU ===================== -->
+<section id="layarGuru" class="layar">
+  <div class="g-atas"><div class="wadah-lebar">
+    <div><h2>Mode Guru – CBT</h2><div class="kecil" style="color:#CFE0F1" id="gSekolah"></div></div>
+    <div style="display:flex;gap:8px"><button class="btn" onclick="keluarGuru()">Keluar</button></div>
+  </div>
+  <div class="wadah-lebar tab-bar">
+    <button class="tab aktif" data-tab="tUjian" onclick="bukaTab('tUjian')">📋 Daftar Ujian</button>
+    <button class="tab" data-tab="tSoal" onclick="bukaTab('tSoal')">✏️ Bank Soal</button>
+    <button class="tab" data-tab="tRekap" onclick="bukaTab('tRekap')">📊 Rekap Nilai</button>
+  </div></div>
+
+  <!-- TAB: DAFTAR UJIAN -->
+  <div class="wadah-lebar tab-isi" id="tUjian">
+    <div class="baris-judul"><h3>Daftar Ujian</h3>
+      <div><button class="btn" onclick="muatAdmin()">⟳ Muat ulang</button> <button class="btn isi" onclick="formUjian()">+ Ujian baru</button></div></div>
+    <div id="daftarUjian"></div>
+    <p class="tengah" style="margin-top:20px"><button class="btn merah kecil-btn" onclick="hapusDataHP()">Hapus data ujian yang tersimpan di perangkat ini</button></p>
+  </div>
+
+  <!-- TAB: BANK SOAL -->
+  <div class="wadah-lebar tab-isi" id="tSoal" style="display:none">
+    <div class="kartu">
+      <div class="baris-f">
+        <div><label for="sUjian">Ujian</label><select id="sUjian" onchange="gantiUjianSoal()"></select></div>
+        <div style="flex:0 0 auto;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn isi" onclick="editSoal(-1)">+ Tambah soal</button>
+          <button class="btn" onclick="$('fileWord').click()">⬆ Impor dari Word</button>
+          <button class="btn" onclick="unduhFormat()">⬇ Format Word</button>
+          <button class="btn" onclick="pratinjauSiswa()">👁 Pratinjau siswa</button>
+        </div>
+      </div>
+      <input type="file" id="fileWord" accept=".docx" style="display:none" onchange="imporWord(this)">
+      <div id="statusSimpan" class="info" style="display:none"></div>
+    </div>
+    <div id="daftarSoal"></div>
+    <div class="simpan-bar" id="simpanBar" style="display:none">
+      <span>Ada perubahan yang belum disimpan.</span>
+      <button class="btn" onclick="batalPerubahan()">Batalkan</button>
+      <button class="btn isi" onclick="simpanSoal()">💾 Simpan ke server</button>
+    </div>
+  </div>
+
+  <!-- TAB: REKAP -->
+  <div class="wadah-lebar tab-isi" id="tRekap" style="display:none">
+    <div class="kartu">
+      <div class="baris-f">
+        <div><label for="rUjian">Ujian</label><select id="rUjian" onchange="ubahFilter(true)"></select></div>
+        <div><label for="gKelas">Filter kelas</label><select id="gKelas" onchange="ubahFilter()"></select></div>
+        <div><label for="gCari">Cari nama</label><input type="text" id="gCari" oninput="gambarRekap()" placeholder="Ketik nama…"></div>
+        <div style="flex:0 0 auto;display:flex;gap:8px"><button class="btn" onclick="muatRekap()">⟳ Muat ulang</button><button class="btn isi" onclick="unduhCSV()">⬇ Unduh CSV</button></div>
+      </div>
+      <div class="kecil" style="margin-top:8px">Diperbarui: <span id="gWaktu">-</span> (otomatis tiap 30 detik)</div>
+    </div>
+    <div class="ringkas" id="gRingkas"></div>
+    <div class="tabel-guru"><table>
+      <thead><tr><th>No</th><th>Nama</th><th>Kelas</th><th>Absen</th><th>Status</th><th>Pelanggaran</th><th>Benar</th><th>Salah</th><th>Kosong</th><th>Nilai</th><th>Waktu selesai</th><th>Aksi</th></tr></thead>
+      <tbody id="gTabel"></tbody>
+    </table></div>
+    <div class="kartu" style="margin-top:14px">
+      <h3>Analisis Butir Soal</h3>
+      <p class="kecil" id="gButirInfo" style="margin-top:0"></p>
+      <div class="legenda" style="margin-bottom:10px"><span style="color:var(--merah)">&lt; 50% (sulit)</span><span style="color:#8A6500">50–74%</span><span style="color:var(--hijau)">≥ 75% (mudah)</span></div>
+      <div class="butir" id="gButir"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LEMBAR (form ujian / editor soal / impor / pratinjau) ===================== -->
+<div class="lembar" id="lembar"><div class="lembar-isi">
+  <div class="lembar-kepala"><h3 id="lJudul"></h3><button class="btn" onclick="tutupLembar()">Tutup ✕</button></div>
+  <div id="lIsi"></div>
+</div></div>
+
+<!-- ===================== MODAL, OVERLAY, PENAMPIL GAMBAR ===================== -->
+<div class="modal-latar" id="modalLatar"><div class="modal" id="modal"><h3 id="mJudul"></h3><div class="isi" id="mIsi"></div><div class="aksi" id="mAksi"></div></div></div>
+<div class="overlay" id="overlay"><div><div class="putar"></div><div class="j" id="oJudul">Menghubungi server…</div><div class="kecil" id="oSub"></div><div id="oAman"></div></div></div>
+<div class="penampil" id="penampil" onclick="this.classList.remove('buka')"><img id="penampilImg" alt=""></div>
+
+<script>
+/* =====================================================================
+   PENGATURAN — isi API_URL dengan URL Aplikasi Web (berakhiran /exec)
+   ===================================================================== */
+var API_URL = 'https://script.google.com/macros/s/AKfycbxnpUJCU9DLiHR7Mg8N1GjONWG-YTHjhC80OAq4mrjh14ruHfr1e_0KtkGqS7pgD-pe/exec';
+var SEKOLAH = 'SMP Negeri 1 Lamongan';
+/* Daftar kelas yang muncul di pilihan siswa & guru (boleh diubah) */
+var DAFTAR_KELAS = ['7A','7B','7C','7D','7E','7F','7G','7H','7I','7J','7K',
+                    '8A','8B','8C','8D','8E','8F','8G','8H','8I','8J','8K',
+                    '9A','9B','9C','9D','9E','9F','9G','9H','9I','9J','9K'];
+var ABSEN_MAKS = 40;
+/* File format soal Word (unggah juga ke GitHub dengan nama ini agar bisa diunduh dari mode guru) */
+var FILE_FORMAT_WORD = 'Format_Soal_CBT.docx';
+
+/* ===================================================================== */
+var KUNCI_SESI = 'cbt_umum_sesi';
+var KUNCI_FILTER = 'cbt_umum_filter';
+var JEDA_DASAR = window.CBT_JEDA_DASAR || 1500;
+var JEDA_MAKS = window.CBT_JEDA_MAKS || 15000;
+var BATAS_WAKTU_FETCH = 45000;
+var COBA_MASUK = 12, COBA_KUMPUL = 15;
+var HURUF = 'ABCDE';
+
+var sesi = null, tikTimer = null;
+
+/* ---------- utilitas ---------- */
+function $(id) { return document.getElementById(id); }
+function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function tidur(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+function pad(n) { return (n < 10 ? '0' : '') + n; }
+function jam(t) { var d = t ? new Date(t) : new Date(); return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
+function tgl(t) { if (!t) return ''; var d = new Date(t); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + jam(t); }
+function acak(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+function urutan(n) { var a = []; for (var i = 0; i < n; i++) a.push(i); return a; }
+function acakTeks(n) {
+  var h = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789', s = '', b = new Uint32Array(n);
+  window.crypto.getRandomValues(b);
+  for (var i = 0; i < n; i++) s += h[b[i] % h.length];
+  return s;
+}
+function tampil(id) {
+  document.querySelectorAll('.layar').forEach(function (l) { l.classList.remove('aktif'); });
+  $(id).classList.add('aktif'); window.scrollTo(0, 0);
+}
+function angka(x) { return (Math.round(Number(x) * 10) / 10).toString().replace('.', ','); }
+
+/* ---------- penyimpanan HP ---------- */
+function penyimpananAman() { try { localStorage.setItem('cbt_uji', '1'); localStorage.removeItem('cbt_uji'); return true; } catch (e) { return false; } }
+function simpan() { if (!sesi) return; try { localStorage.setItem(KUNCI_SESI, JSON.stringify(sesi)); } catch (e) {} }
+function muatSesi() { try { return JSON.parse(localStorage.getItem(KUNCI_SESI) || 'null'); } catch (e) { return null; } }
+
+/* ---------- modal & overlay (tanpa alert/confirm bawaan) ---------- */
+var modalSelesai = null;
+function modal(o) {
+  return new Promise(function (resolve) {
+    if (modalSelesai) modalSelesai(null);
+    modalSelesai = function (v) { modalSelesai = null; $('modalLatar').classList.remove('buka'); resolve(v); };
+    $('modal').className = 'modal ' + (o.jenis || '');
+    $('mJudul').textContent = o.judul || '';
+    $('mIsi').innerHTML = o.isi || '';
+    var aksi = $('mAksi'); aksi.innerHTML = '';
+    aksi.style.flexDirection = o.tegak ? 'column' : 'row';
+    (o.tombol || [{ teks: 'OK', nilai: true }]).forEach(function (t) {
+      var b = document.createElement('button');
+      b.textContent = t.teks; if (t.kelas) b.className = t.kelas;
+      b.onclick = function () { if (modalSelesai) modalSelesai(t.nilai); };
+      aksi.appendChild(b);
+    });
+    $('modalLatar').classList.add('buka');
+  });
+}
+function tutupModalDiam() { if (modalSelesai) modalSelesai(null); }
+function overlay(judul, sub, aman) {
+  $('oJudul').textContent = judul; $('oSub').textContent = sub || '';
+  $('oAman').innerHTML = aman ? '<span class="aman">' + esc(aman) + '</span>' : '';
+  $('overlay').classList.add('buka');
+}
+function tutupOverlay() { $('overlay').classList.remove('buka'); }
+
+/* ---------- komunikasi server ---------- */
+function api(data) {
+  var ctl = new AbortController();
+  var t = setTimeout(function () { ctl.abort(); }, BATAS_WAKTU_FETCH);
+  // POST JSON TANPA header Content-Type (tanpa preflight CORS)
+  return fetch(API_URL, { method: 'POST', body: JSON.stringify(data), redirect: 'follow', signal: ctl.signal })
+    .then(function (r) { return r.text(); })
+    .then(function (teks) { clearTimeout(t); try { return JSON.parse(teks); } catch (e) { throw new Error('Balasan server bukan JSON'); } },
+          function (e) { clearTimeout(t); throw e; });
+}
+async function apiUlang(data, maks, jenis) {
+  var aman = jenis === 'kumpul' ? 'Jawabanmu aman di HP' : (jenis === 'masuk' ? 'Jangan tutup halaman ini' : '');
+  overlay(jenis === 'kumpul' ? 'Mengirim jawaban…' : (jenis === 'guru' ? 'Memproses…' : 'Menghubungi server…'), '', jenis === 'kumpul' ? aman : '');
+  for (var n = 1; ; n++) {
+    try {
+      var r = await api(data);
+      if (r && r.ulang) throw new Error(r.pesan || 'Server sibuk');
+      tutupOverlay(); return r;
+    } catch (e) {
+      if (n >= maks) { tutupOverlay(); throw e; }
+      var jeda = Math.min(JEDA_DASAR * Math.pow(1.5, n - 1), JEDA_MAKS) * (0.6 + Math.random() * 0.8);
+      overlay('Server ramai, mencoba lagi…', 'Percobaan ' + (n + 1) + ' dari ' + maks, aman || 'Mohon tunggu');
+      await tidur(jeda);
+    }
+  }
+}
+
+/* =====================================================================
+   TAMPILAN SOAL (dipakai siswa, pratinjau, dan editor)
+   ===================================================================== */
+function htmlTeks(t, gb, diPilihan) {
+  return esc(t).replace(/\[gambar:([A-Za-z0-9_-]+)\]/g, function (m, id) {
+    if (gb && gb[id] && diPilihan)   // di tombol pilihan: ketuk gambar = memilih; tombol 🔍 = memperbesar
+      return '<span class="gbr-opsi"><img class="gbr-in" src="' + gb[id] + '" alt="gambar pilihan"><span class="zoom" onclick="event.stopPropagation();perbesar(this.previousSibling.src)" title="Perbesar">🔍</span></span>';
+    return gb && gb[id] ? '<img class="gbr-in" src="' + gb[id] + '" alt="gambar" onclick="perbesar(this.src)">' : '<span class="kecil">[gambar ' + esc(id) + ' tidak ditemukan]</span>';
+  }).replace(/\n/g, '<br>');
+}
+function htmlTabel(t, gb) {
+  var rows = String(t).split(/\n/).filter(function (r) { return r.trim(); }).map(function (r) { return r.split('|').map(function (c) { return c.trim(); }); });
+  if (!rows.length) return '';
+  var adaGbr = /\[gambar:/.test(t);
+  return '<div class="tabel-geser"><table' + (adaGbr ? ' class="tabel-gbr"' : '') + '>' + rows.map(function (r, i) {
+    return '<tr>' + r.map(function (c) { var tag = i === 0 && !adaGbr ? 'th' : 'td'; return '<' + tag + '>' + htmlTeks(c, gb) + '</' + tag + '>'; }).join('') + '</tr>';
+  }).join('') + '</table></div>' + (adaGbr ? '<div class="ketuk">Ketuk gambar untuk memperbesar</div>' : '<div class="geser-info">↔ Geser tabel ke samping jika tidak terlihat semua.</div>');
+}
+function htmlBadanSoal(q, gb) {
+  var h = '';
+  if (q.teks) h += String(q.teks).split(/\n\s*\n/).map(function (p) { return '<p>' + htmlTeks(p.trim(), gb) + '</p>'; }).join('');
+  if (q.stimulus) h += '<div class="stimulus">' + htmlTeks(q.stimulus, gb) + '</div>';
+  if (q.tabel) h += htmlTabel(q.tabel, gb);
+  var ids = String(q.gambar || '').split(/[,\s]+/).filter(String);
+  if (ids.length) {
+    h += '<div class="' + (ids.length > 1 ? 'poster-grid' : '') + '">' + ids.map(function (id) {
+      return gb && gb[id] ? '<img class="gbr" src="' + gb[id] + '" alt="gambar soal" onclick="perbesar(this.src)">' : '<div class="kecil">[gambar ' + esc(id) + ' tidak ditemukan]</div>';
+    }).join('') + '</div><div class="ketuk">Ketuk gambar untuk memperbesar</div>';
+  }
+  if (q.pertanyaan) h += String(q.pertanyaan).split(/\n\s*\n/).map(function (p) { return '<p>' + htmlTeks(p.trim(), gb) + '</p>'; }).join('');
+  return h;
+}
+var PETUNJUK_JENIS = { PGK: 'Pilih <b>semua</b> jawaban yang benar (bisa lebih dari satu).', BS: 'Tentukan <b>Benar</b> atau <b>Salah</b> untuk setiap pernyataan.' };
+function perbesar(src) { $('penampilImg').src = src; $('penampil').classList.add('buka'); }
+
+/* =====================================================================
+   HALAMAN AWAL & LOGIN SISWA
+   ===================================================================== */
+function keAwal() {
+  hentikanTimer(); hentikanGuru();
+  $('tSekolah').textContent = SEKOLAH;
+  var s = muatSesi(), box = $('infoTertunda'); box.innerHTML = '';
+  if (s && (s.status === 'mengerjakan' || s.status === 'aturan'))
+    box.innerHTML = '<div class="info kuning">Ada ujian <b>' + esc(s.ujian.mapel) + '</b> yang belum selesai di HP ini atas nama <b>' + esc(s.nama) + '</b> (' + esc(s.kelas) + ', absen ' + s.absen + '). Tekan <b>Masuk sebagai Siswa</b> lalu <b>Masuk</b> untuk melanjutkan.</div>';
+  tampil(API_URL ? 'layarAwal' : 'layarPasang');
+}
+function bukaLoginSiswa() {
+  var sel = $('inKelas');
+  if (!sel.options.length) sel.innerHTML = '<option value="">— Pilih kelas —</option>' + DAFTAR_KELAS.map(function (k) { return '<option>' + k + '</option>'; }).join('');
+  $('inAbsen').max = ABSEN_MAKS;
+  var s = muatSesi(), b = $('bannerLanjut'); b.innerHTML = '';
+  if (s && s.status !== 'selesai') {
+    $('inNama').value = s.nama; sel.value = s.kelas; $('inAbsen').value = s.absen;
+    b.innerHTML = '<div class="info kuning">Melanjutkan ujian <b>' + esc(s.ujian.mapel) + '</b> atas nama <b>' + esc(s.nama) + '</b>. Tekan <b>Masuk</b>. Jawaban yang sudah diisi tetap tersimpan.</div>';
+  }
+  tampil('layarLoginSiswa');
+}
+
+async function masukSiswa(kodeUjian) {
+  var nama = $('inNama').value.replace(/\s+/g, ' ').trim(), kelas = $('inKelas').value;
+  var absen = parseInt($('inAbsen').value, 10), token = $('inToken').value.trim().toUpperCase();
+  if (nama.length < 3) return modal({ judul: 'Nama belum diisi', isi: 'Tulis nama lengkapmu.' });
+  if (!kelas) return modal({ judul: 'Kelas belum dipilih', isi: 'Pilih kelasmu.' });
+  if (!(absen >= 1 && absen <= ABSEN_MAKS)) return modal({ judul: 'Nomor absen salah', isi: 'Isi nomor absen dengan angka 1–' + ABSEN_MAKS + '.' });
+  if (!penyimpananAman()) return modal({ jenis: 'bahaya', judul: 'Browser tidak bisa menyimpan', isi: 'Browser ini memblokir penyimpanan (mungkin mode samaran). Buka alamat ujian di Chrome biasa.' });
+
+  var s = muatSesi();
+  if (s && s.status !== 'selesai') {
+    if (s.kelas === kelas && Number(s.absen) === absen) return lanjutkan(s);
+    return modal({ jenis: 'awas', judul: 'HP ini sedang dipakai ujian', isi: 'HP ini masih menyimpan ujian <b>' + esc(s.nama) + '</b> (' + esc(s.kelas) + ', absen ' + s.absen + ') yang belum selesai/terkirim. Selesaikan dulu atau hubungi guru.' });
+  }
+  var id = kelas + '-' + acakTeks(10), r;
+  $('btnMasuk').disabled = true;
+  try {
+    r = await apiUlang({ aksi: 'mulai', nama: nama, kelas: kelas, absen: absen, token: token, id: id, ujian: typeof kodeUjian === 'string' ? kodeUjian : '', perangkat: navigator.userAgent }, COBA_MASUK, 'masuk');
+  } catch (e) {
+    $('btnMasuk').disabled = false;
+    return modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Server belum bisa dihubungi setelah ' + COBA_MASUK + ' kali mencoba. Periksa paket data/sinyal, tunggu sebentar, lalu tekan <b>Masuk</b> lagi.' });
+  }
+  $('btnMasuk').disabled = false;
+  if (!r.ok) {
+    if (r.kode === 'PILIH') {
+      var v = await modal({ judul: 'Pilih ujian', isi: 'Ada beberapa ujian yang dibuka untuk kelas ' + esc(kelas) + ':', tegak: true,
+        tombol: r.pilihan.map(function (p) { return { teks: p.mapel + ' – ' + p.judul + ' (' + p.durasi + ' mnt)', nilai: p.kode, kelas: 'dua' }; }).concat([{ teks: 'Batal', nilai: null, kelas: 'dua' }]) });
+      if (v) masukSiswa(v);
+      return;
+    }
+    if (r.kode === 'SUDAH' && s && s.status === 'selesai' && s.kelas === kelas && Number(s.absen) === absen && s.hasil) { sesi = s; return tampilHasil(); }
+    return modal({ jenis: r.kode === 'SUDAH' ? 'bahaya' : 'awas', judul: r.kode === 'SUDAH' ? 'Sudah mengerjakan' : 'Belum bisa masuk', isi: esc(r.pesan) });
+  }
+  var u = r.ujian, opsiUrut = {};
+  r.soal.forEach(function (q) {
+    var n = q.opsi.length;
+    opsiUrut[q.no] = (q.jenis !== 'BS' && u.acakPilihan && q.acak) ? acak(urutan(n)) : urutan(n);
+  });
+  sesi = { v: 2, id: r.id, nama: nama, kelas: kelas, absen: absen, ujian: u, sekolah: r.sekolah,
+    soal: r.soal, gambar: r.gambar || {}, durasi: u.durasi * 60, maks: r.maksPelanggaran || 3,
+    urutan: u.acakSoal ? acak(urutan(r.soal.length)) : urutan(r.soal.length), opsi: opsiUrut,
+    jawab: {}, ragu: {}, pos: 0, status: 'aturan', pel: 0, catatan: [], lastViol: 0, tertunda: null,
+    dikeluarkan: false, waktuHabis: false, mulaiKlien: Date.now(), deadline: null };
+  if (!simpanAman()) return;
+  tampilAturan();
+}
+function simpanAman() {
+  try { localStorage.setItem(KUNCI_SESI, JSON.stringify(sesi)); return true; }
+  catch (e) { modal({ jenis: 'bahaya', judul: 'Memori browser penuh', isi: 'Soal tidak bisa disimpan di HP ini (memori browser penuh). Gunakan HP lain atau hubungi guru.' }); return false; }
+}
+function lanjutkan(s) {
+  sesi = s;
+  if (s.status === 'aturan') return tampilAturan();
+  if (s.status === 'mengirim') return kirimJawaban();
+  masukLayarUjian();
+}
+function tampilAturan() {
+  $('aMapel').textContent = sesi.ujian.mapel; $('aJudul').textContent = sesi.ujian.judul + (sesi.ujian.subjudul ? ' – ' + sesi.ujian.subjudul : '');
+  $('aNama').textContent = sesi.nama + ' · ' + sesi.kelas + ' · Absen ' + sesi.absen;
+  $('aDurasi').textContent = sesi.ujian.durasi + ' menit'; $('aJumlah').textContent = sesi.soal.length + ' soal';
+  document.querySelectorAll('.isiMaks').forEach(function (e) { e.textContent = sesi.maks; });
+  $('cekPaham').checked = false; $('btnMulai').disabled = true;
+  tampil('layarAturan');
+}
+function mulaiMengerjakan() {
+  if (sesi.status === 'aturan') { sesi.status = 'mengerjakan'; sesi.deadline = Date.now() + sesi.durasi * 1000; simpan(); }
+  masukLayarUjian();
+}
+function masukLayarUjian() {
+  tampil('layarUjian');
+  $('noTotal').textContent = sesi.soal.length;
+  gambarSoal(); mulaiTimer();
+  if (sesi.status !== 'mengerjakan') return;
+  if (sesi.deadline && Date.now() >= sesi.deadline) { sesi.waktuHabis = true; simpan(); return kirimJawaban(); }
+  mulaiPengawasan();
+  if (sesi.dikeluarkan || sesi.tertunda) tampilPeringatan();
+}
+
+/* ---------- soal di layar siswa ---------- */
+function soalKini() { return sesi.soal[sesi.urutan[sesi.pos]]; }
+function terjawab(q) {
+  var a = sesi.jawab[q.no];
+  if (q.jenis === 'PGK') return Array.isArray(a) && a.length > 0;
+  if (q.jenis === 'BS') return Array.isArray(a) && a.length === q.opsi.length && a.every(function (x) { return x === 'B' || x === 'S'; });
+  return a != null;
+}
+function gambarSoal() {
+  var q = soalKini(), n = sesi.soal.length, h = '';
+  h += '<div class="soal-label"><span>Soal nomor ' + (sesi.pos + 1) + ' dari ' + n + '</span>' + (sesi.ragu[q.no] ? '<span class="tanda-ragu">Ragu-ragu</span>' : '') + '</div>';
+  h += '<div class="soal">' + htmlBadanSoal(q, sesi.gambar) + '</div>';
+  if (PETUNJUK_JENIS[q.jenis]) h += '<div class="petunjuk-jenis">' + PETUNJUK_JENIS[q.jenis] + '</div>';
+  h += htmlPilihan(q, sesi.opsi[q.no], sesi.jawab[q.no], sesi.gambar, 'pilihJawaban');
+  $('kontenSoal').innerHTML = h;
+  $('noKini').textContent = sesi.pos + 1;
+  $('btnKembali').disabled = sesi.pos === 0; $('btnKembali').style.opacity = sesi.pos === 0 ? .45 : 1;
+  $('btnRagu').classList.toggle('on', !!sesi.ragu[q.no]);
+  var akhir = sesi.pos === n - 1;
+  $('btnLanjut').textContent = akhir ? 'Selesai ✓' : 'Lanjut ›'; $('btnLanjut').classList.toggle('selesai', akhir);
+  $('uIsi').scrollTop = 0;
+}
+function htmlPilihan(q, urut, a, gb, fn) {
+  var h = '';
+  if (q.jenis === 'BS') {
+    h += '<div class="bs">';
+    q.opsi.forEach(function (o, i) {
+      var v = Array.isArray(a) ? a[i] : null;
+      h += '<div class="bs-baris"><div class="bs-teks"><b>' + (i + 1) + '.</b> ' + htmlTeks(o, gb) + '</div><div class="bs-tombol">' +
+        '<button class="' + (v === 'B' ? 'pilih' : '') + '" onclick="' + fn + '(' + i + ',\'B\')">Benar</button>' +
+        '<button class="' + (v === 'S' ? 'pilih' : '') + '" onclick="' + fn + '(' + i + ',\'S\')">Salah</button></div></div>';
+    });
+    return h + '</div>';
+  }
+  urut.forEach(function (asli, p) {
+    var dipilih = q.jenis === 'PGK' ? (Array.isArray(a) && a.indexOf(asli) >= 0) : a === asli;
+    h += '<button class="opsi' + (q.jenis === 'PGK' ? ' kotak' : '') + (dipilih ? ' pilih' : '') + '" onclick="' + fn + '(' + p + ')"><span class="huruf">' +
+      (q.jenis === 'PGK' ? (dipilih ? '✓' : HURUF[p]) : HURUF[p]) + '</span><span>' + htmlTeks(q.opsi[asli], gb, true) + '</span></button>';
+  });
+  return h;
+}
+function pilihJawaban(p, bs) {
+  if (sesi.status !== 'mengerjakan') return;
+  var q = soalKini();
+  if (q.jenis === 'BS') {
+    var a = Array.isArray(sesi.jawab[q.no]) ? sesi.jawab[q.no] : q.opsi.map(function () { return null; });
+    a[p] = bs; sesi.jawab[q.no] = a;
+  } else if (q.jenis === 'PGK') {
+    var asli = sesi.opsi[q.no][p], b = Array.isArray(sesi.jawab[q.no]) ? sesi.jawab[q.no].slice() : [];
+    var i = b.indexOf(asli); if (i >= 0) b.splice(i, 1); else b.push(asli);
+    b.sort(); if (b.length) sesi.jawab[q.no] = b; else delete sesi.jawab[q.no];
+  } else sesi.jawab[q.no] = sesi.opsi[q.no][p];
+  simpan();
+  var y = $('uIsi').scrollTop; gambarSoal(); $('uIsi').scrollTop = y;
+}
+function toggleRagu() {
+  if (sesi.status !== 'mengerjakan') return;
+  var q = soalKini(); if (sesi.ragu[q.no]) delete sesi.ragu[q.no]; else sesi.ragu[q.no] = true;
+  simpan(); var y = $('uIsi').scrollTop; gambarSoal(); $('uIsi').scrollTop = y;
+}
+function pindah(d) { var p = sesi.pos + d; if (p < 0 || p >= sesi.soal.length) return; sesi.pos = p; simpan(); gambarSoal(); }
+function lanjutAtauSelesai() { if (sesi.pos === sesi.soal.length - 1) konfirmasiKumpul(); else pindah(1); }
+function bukaLaci() {
+  var h = '', dij = 0, rag = 0;
+  sesi.urutan.forEach(function (idx, p) {
+    var q = sesi.soal[idx], kls = '', j = terjawab(q);
+    if (sesi.ragu[q.no]) { kls = 'ragu'; rag++; } else if (j) kls = 'dijawab';
+    if (j) dij++;
+    h += '<button class="' + kls + (p === sesi.pos ? ' kini' : '') + '" onclick="keNomor(' + p + ')">' + (p + 1) + '</button>';
+  });
+  $('gridNo').innerHTML = h;
+  $('ringkasLaci').textContent = 'Dijawab ' + dij + ' · Ragu-ragu ' + rag + ' · Belum ' + (sesi.soal.length - dij);
+  $('laci').classList.add('buka');
+}
+function tutupLaci() { $('laci').classList.remove('buka'); }
+function keNomor(p) { sesi.pos = p; simpan(); tutupLaci(); gambarSoal(); }
+async function konfirmasiKumpul() {
+  if (sesi.status !== 'mengerjakan') return;
+  var dij = sesi.soal.filter(terjawab).length, belum = sesi.soal.length - dij, rag = Object.keys(sesi.ragu).length;
+  var v = await modal({ jenis: belum ? 'awas' : '', judul: 'Kumpulkan jawaban?',
+    isi: 'Belum dijawab: <b>' + belum + '</b> soal<br>Ragu-ragu: <b>' + rag + '</b> soal<br><br>Setelah dikumpulkan, jawaban tidak bisa diubah.',
+    tombol: [{ teks: 'Periksa lagi', nilai: false, kelas: 'dua' }, { teks: 'Ya, kumpulkan', nilai: true }] });
+  if (v === true && sesi.status === 'mengerjakan') kirimJawaban();
+}
+
+/* ---------- timer ---------- */
+function mulaiTimer() {
+  hentikanTimer();
+  var f = function () {
+    if (!sesi || !sesi.deadline) return;
+    var sisa = Math.max(0, Math.round((sesi.deadline - Date.now()) / 1000)), el = $('timer');
+    el.textContent = pad(Math.floor(sisa / 60)) + ':' + pad(sisa % 60);
+    el.classList.toggle('merah', sisa <= 300);
+    if (sisa <= 0 && sesi.status === 'mengerjakan') {
+      sesi.waktuHabis = true; simpan(); hentikanTimer();
+      modal({ jenis: 'awas', judul: 'Waktu habis', isi: 'Jawabanmu dikumpulkan otomatis.' });
+      kirimJawaban();
+    }
+  };
+  f(); tikTimer = setInterval(f, 1000);
+}
+function hentikanTimer() { if (tikTimer) clearInterval(tikTimer); tikTimer = null; }
+
+/* =====================================================================
+   ANTI-CURANG (maks 3 pelanggaran)
+   ===================================================================== */
+var awas = { aktif: false, blur: null, ukur: null, luas: 0, terbagi: false };
+function luasLayar() { return window.innerWidth * window.innerHeight; }
+function mulaiPengawasan() { awas.aktif = true; awas.luas = luasLayar(); awas.terbagi = false; }
+function hentikanPengawasan() { awas.aktif = false; clearTimeout(awas.blur); clearTimeout(awas.ukur); }
+function langgar(jenis, diam) {
+  if (!awas.aktif || !sesi || sesi.status !== 'mengerjakan') return;
+  var now = Date.now();
+  if (now - (sesi.lastViol || 0) < 2500) return;          // satu kejadian dihitung sekali
+  sesi.lastViol = now; sesi.pel++; sesi.catatan.push(jam(now) + ' ' + jenis); sesi.tertunda = jenis;
+  if (sesi.pel >= sesi.maks) sesi.dikeluarkan = true;
+  simpan();
+  if (!diam) tampilPeringatan();
+}
+function tampilPeringatan() {
+  if (sesi.dikeluarkan) { hentikanPengawasan(); sesi.tertunda = null; simpan(); return kirimJawaban(); }
+  modal({ jenis: 'awas', judul: '⚠ Peringatan pelanggaran ke-' + sesi.pel,
+    isi: 'Terdeteksi: <b>' + esc(sesi.tertunda || 'pelanggaran') + '</b>.<br><br>Sisa kesempatan: <b>' + (sesi.maks - sesi.pel) + '</b>. Pada pelanggaran ke-' + sesi.maks + ' kamu otomatis dikeluarkan dan jawabanmu langsung dinilai.',
+    tombol: [{ teks: 'Saya mengerti', nilai: true }] }).then(function () { if (sesi && sesi.status === 'mengerjakan') { sesi.tertunda = null; simpan(); } });
+}
+document.addEventListener('visibilitychange', function () { if (document.hidden) langgar('Keluar halaman / membuka aplikasi lain'); });
+window.addEventListener('blur', function () {
+  if (!awas.aktif) return;
+  clearTimeout(awas.blur);
+  awas.blur = setTimeout(function () { if (awas.aktif && !document.hidden && !document.hasFocus()) langgar('Membuka jendela lain / menarik notifikasi'); }, 1000);
+});
+window.addEventListener('focus', function () { clearTimeout(awas.blur); });
+window.addEventListener('resize', function () {
+  if (!awas.aktif) return;
+  clearTimeout(awas.ukur);
+  awas.ukur = setTimeout(function () {
+    var l = luasLayar();
+    if (l < awas.luas * 0.7) { if (!awas.terbagi) { awas.terbagi = true; langgar('Layar terbagi (split screen) / jendela mengecil'); } }
+    else { awas.terbagi = false; if (l > awas.luas) awas.luas = l; }
+  }, 500);
+});
+window.addEventListener('pagehide', function () { langgar('Menutup / memuat ulang halaman', true); });
+window.addEventListener('beforeunload', function () { langgar('Menutup / memuat ulang halaman', true); });
+['contextmenu', 'copy', 'cut', 'selectstart', 'dragstart'].forEach(function (ev) {
+  document.addEventListener(ev, function (e) {
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
+    if (document.body.classList.contains('mode-guru') && ev !== 'contextmenu') return;
+    e.preventDefault();
+  });
+});
+
+/* =====================================================================
+   KUMPUL & HASIL
+   ===================================================================== */
+var sedangKirim = false;
+async function kirimJawaban() {
+  if (!sesi || sedangKirim) return;
+  sedangKirim = true;
+  hentikanPengawasan(); hentikanTimer(); tutupLaci();
+  if (sesi.status !== 'mengirim') { sesi.status = 'mengirim'; simpan(); }
+  tampil('layarKirim');
+  $('kirimJudul').textContent = sesi.dikeluarkan ? 'Kamu dikeluarkan dari ujian' : 'Mengumpulkan jawaban…';
+  $('kirimIsi').innerHTML = (sesi.dikeluarkan ? '<div class="info merah" style="text-align:left">Kamu melakukan ' + sesi.pel + ' pelanggaran. Ujian dihentikan otomatis, jawabanmu tetap dinilai. Kamu hanya bisa mengulang setelah guru menghapus hasilmu.</div>' : '') +
+    '<div class="putar"></div><p>Mengirim jawaban ke server…</p><span class="aman">Jawabanmu aman di HP</span>';
+  var data = { aksi: 'selesai', ujian: sesi.ujian.kode, id: sesi.id, jawaban: sesi.jawab, pelanggaran: sesi.pel, catatan: sesi.catatan,
+    dikeluarkan: !!sesi.dikeluarkan, waktuHabis: !!sesi.waktuHabis, nama: sesi.nama, kelas: sesi.kelas, absen: sesi.absen,
+    mulai: sesi.mulaiKlien, perangkat: navigator.userAgent };
+  var r = null, galat = '';
+  try { r = await apiUlang(data, COBA_KUMPUL, 'kumpul'); } catch (e) { galat = 'Sinyal/server belum bisa dihubungi.'; }
+  sedangKirim = false;
+  if (r && r.ok) {
+    sesi.status = 'selesai'; sesi.hasil = r;
+    sesi.soal = []; sesi.gambar = {};                 // kosongkan memori HP
+    simpan(); tutupModalDiam(); return tampilHasil();
+  }
+  if (r && !r.ok) galat = r.pesan || 'Server menolak data.';
+  $('kirimJudul').textContent = 'Jawaban belum terkirim';
+  $('kirimIsi').innerHTML = '<div class="info kuning" style="text-align:left">' + esc(galat) + '<br><b>Jawabanmu aman di HP.</b> Jangan hapus data browser. Pastikan paket data aktif, lalu tekan tombol di bawah.</div>' +
+    '<button class="tombol hijau" onclick="kirimJawaban()">Kirim Ulang Jawaban</button><p class="kecil">Jika halaman tertutup, buka lagi dan tekan Masuk — pengiriman diulang otomatis.</p>';
+}
+function tampilHasil() {
+  var h = sesi.hasil || {}, keluar = /Dikeluarkan/.test(h.status || '');
+  $('hMapel').textContent = sesi.ujian.mapel; $('hJudul').textContent = sesi.ujian.judul;
+  var nilai = h.tampilNilai === false ? '<div class="kartu tengah"><div class="kecil">' + esc(sesi.nama) + ' · ' + esc(sesi.kelas) + ' · Absen ' + esc(sesi.absen) + '</div><p style="font-size:20px;font-weight:700;color:var(--biru)">Jawaban sudah diterima.</p><p class="kecil">Nilai akan diumumkan oleh guru.</p></div>' :
+    '<div class="kartu tengah"><div class="kecil">' + esc(sesi.nama) + ' · ' + esc(sesi.kelas) + ' · Absen ' + esc(sesi.absen) + '</div>' +
+    '<div class="kecil" style="margin-top:10px">NILAI</div><div class="nilai-besar">' + angka(h.nilai) + '</div>' +
+    '<div class="statistik"><div class="b"><b>' + h.benar + '</b>Benar</div><div class="s"><b>' + h.salah + '</b>Salah</div><div class="k"><b>' + h.kosong + '</b>Kosong</div></div></div>';
+  $('hasilIsi').innerHTML = (keluar ? '<div class="info merah"><b>Status: ' + esc(h.status) + '</b><br>Kamu bisa mengulang hanya jika guru menghapus hasilmu.</div>' : '<div class="info">Jawaban berhasil dikumpulkan. Terima kasih!</div>') + nilai;
+  tampil('layarHasil');
+}
+
+/* =====================================================================
+   MODE GURU
+   ===================================================================== */
+var guru = { pin: '', ujian: [], timer: null, sibuk: false, rekap: null,
+             soalKode: '', soal: [], gambar: {}, kotor: false, asli: '' };
+
+function bukaLoginGuru() {
+  var p = ''; try { p = sessionStorage.getItem('cbt_pin') || ''; } catch (e) {}
+  if (p) { guru.pin = p; return masukGuru(true); }
+  $('inPin').value = ''; tampil('layarLoginGuru');
+}
+async function masukGuru(otomatis) {
+  if (otomatis !== true) guru.pin = $('inPin').value.trim();
+  if (!guru.pin) return modal({ judul: 'PIN kosong', isi: 'Masukkan PIN guru.' });
+  var r;
+  try { r = await apiUlang({ aksi: 'adminData', pin: guru.pin }, 4, 'guru'); }
+  catch (e) { return modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Server tidak bisa dihubungi. Coba lagi.' }); }
+  if (!r.ok) {
+    try { sessionStorage.removeItem('cbt_pin'); } catch (e) {}
+    $('inPin').value = ''; tampil('layarLoginGuru');
+    return modal({ jenis: 'bahaya', judul: 'Gagal masuk', isi: esc(r.pesan) });
+  }
+  try { sessionStorage.setItem('cbt_pin', guru.pin); } catch (e) {}
+  document.body.classList.add('mode-guru');
+  terimaAdmin(r);
+  tampil('layarGuru'); bukaTab('tUjian', true);
+  hentikanGuru();
+  guru.timer = setInterval(function () { if ($('layarGuru').classList.contains('aktif') && $('tRekap').style.display !== 'none') muatRekap(true); }, 30000);
+}
+function hentikanGuru() { if (guru.timer) clearInterval(guru.timer); guru.timer = null; }
+async function keluarGuru() {
+  if (guru.kotor && !(await konfirmasiBuang())) return;
+  guru.kotor = false; hentikanGuru(); document.body.classList.remove('mode-guru');
+  try { sessionStorage.removeItem('cbt_pin'); } catch (e) {} guru.pin = ''; keAwal();
+}
+function terimaAdmin(r) {
+  guru.ujian = r.ujian || []; $('gSekolah').textContent = r.sekolah || SEKOLAH;
+  gambarDaftarUjian(); isiPilihUjian();
+}
+async function muatAdmin() {
+  try { var r = await apiUlang({ aksi: 'adminData', pin: guru.pin }, 4, 'guru'); if (r.ok) terimaAdmin(r); else modal({ jenis: 'bahaya', judul: 'Gagal', isi: esc(r.pesan) }); }
+  catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Coba lagi.' }); }
+}
+async function konfirmasiBuang() {
+  return (await modal({ jenis: 'awas', judul: 'Perubahan soal belum disimpan', isi: 'Buang perubahan soal yang belum disimpan?',
+    tombol: [{ teks: 'Kembali', nilai: false, kelas: 'dua' }, { teks: 'Buang', nilai: true, kelas: 'merah' }] })) === true;
+}
+async function bukaTab(id, paksa) {
+  if (!paksa && id !== 'tSoal' && guru.kotor && !(await konfirmasiBuang())) return;
+  if (id !== 'tSoal' && guru.kotor) { guru.kotor = false; perbaruiBarSimpan(); }
+  document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('aktif', t.getAttribute('data-tab') === id); });
+  document.querySelectorAll('.tab-isi').forEach(function (t) { t.style.display = t.id === id ? '' : 'none'; });
+  if (id === 'tSoal' && $('sUjian').value && guru.soalKode !== $('sUjian').value) muatSoal($('sUjian').value);
+  if (id === 'tSoal' && !guru.ujian.length) $('daftarSoal').innerHTML = '<div class="info">Buat ujian dulu di tab <b>Daftar Ujian</b>.</div>';
+  if (id === 'tRekap') muatRekap();
+}
+function isiPilihUjian() {
+  var opsi = guru.ujian.map(function (u) { return '<option value="' + esc(u.kode) + '">' + esc(u.mapel + ' – ' + u.judul + ' [' + u.kode + ']') + '</option>'; }).join('');
+  ['sUjian', 'rUjian'].forEach(function (id) {
+    var lama = $(id).value; $(id).innerHTML = opsi || '<option value="">(belum ada ujian)</option>';
+    if (lama && guru.ujian.some(function (u) { return u.kode === lama; })) $(id).value = lama;
+  });
+}
+function ringkasKelas(k) {
+  var per = {}; k.forEach(function (x) { var m = x.match(/^(\d+)(.*)$/); var t = m ? m[1] : x; (per[t] = per[t] || []).push(m ? m[2] : ''); });
+  return Object.keys(per).map(function (t) { return per[t].length > 1 ? t + ' (' + per[t].join(', ') + ')' : t + per[t][0]; }).join('; ');
+}
+
+/* ---------- Tab Daftar Ujian ---------- */
+function gambarDaftarUjian() {
+  if (!guru.ujian.length) { $('daftarUjian').innerHTML = '<div class="kartu tengah"><p>Belum ada ujian.</p><button class="btn isi" onclick="formUjian()">+ Buat ujian pertama</button></div>'; return; }
+  $('daftarUjian').innerHTML = guru.ujian.map(function (u) {
+    return '<div class="kartu kartu-ujian"><div class="ku-kiri"><div class="kecil">' + esc(u.kode) + '</div><h3>' + esc(u.mapel) + ' – ' + esc(u.judul) + '</h3>' +
+      '<div class="kecil">' + esc(u.subjudul || '') + '</div>' +
+      '<div class="ku-meta"><span>👥 ' + esc(ringkasKelas(u.kelas)) + '</span><span>⏱ ' + u.durasi + ' menit</span><span>📝 ' + u.jumlahSoal + ' soal</span><span>✅ ' + u.peserta + ' peserta</span>' +
+      (u.token ? '<span>🔑 Token: <b>' + esc(u.token) + '</b></span>' : '<span>🔓 Tanpa token</span>') + (u.tampilNilai ? '' : '<span>🙈 Nilai disembunyikan</span>') + '</div></div>' +
+      '<div class="ku-kanan"><span class="pill ' + (u.buka ? 'buka' : 'tutup') + '">' + (u.buka ? 'DIBUKA' : 'DITUTUP') + '</span>' +
+      '<div class="ku-aksi"><button class="btn ' + (u.buka ? 'merah' : 'isi') + '" onclick="bukaTutup(\'' + u.kode + '\')">' + (u.buka ? 'Tutup ujian' : 'Buka ujian') + '</button>' +
+      '<button class="btn" onclick="aturToken(\'' + u.kode + '\')">Token</button>' +
+      '<button class="btn" onclick="keSoal(\'' + u.kode + '\')">Soal</button><button class="btn" onclick="keRekap(\'' + u.kode + '\')">Rekap</button>' +
+      '<button class="btn" onclick="formUjian(\'' + u.kode + '\')">Edit</button><button class="btn merah" onclick="hapusUjian(\'' + u.kode + '\')">Hapus</button></div></div></div>';
+  }).join('');
+}
+function cariU(kode) { return guru.ujian.filter(function (u) { return u.kode === kode; })[0]; }
+function keSoal(kode) { $('sUjian').value = kode; bukaTab('tSoal'); if (guru.soalKode !== kode) muatSoal(kode); }
+function keRekap(kode) { $('rUjian').value = kode; bukaTab('tRekap'); }
+
+function formUjian(kode) {
+  var u = kode ? cariU(kode) : { kode: '', mapel: '', judul: 'Sumatif Akhir Semester', subjudul: '', kelas: [], durasi: 90, acakSoal: true, acakPilihan: true, buka: false, token: '', tampilNilai: true };
+  var tingkat = {}; DAFTAR_KELAS.forEach(function (k) { var t = (k.match(/^\d+/) || [k])[0]; (tingkat[t] = tingkat[t] || []).push(k); });
+  var h = '<div class="form-grid">' +
+    '<div><label>Mata pelajaran</label><input type="text" id="fMapel" value="' + esc(u.mapel) + '" placeholder="Contoh: KKA"></div>' +
+    '<div><label>Kode ujian <span class="kecil">(unik, tanpa spasi)</span></label><input type="text" id="fKode" value="' + esc(u.kode) + '" placeholder="Contoh: KKA7-SAS" maxlength="12" style="text-transform:uppercase"></div>' +
+    '<div><label>Judul</label><input type="text" id="fJudul" value="' + esc(u.judul) + '"></div>' +
+    '<div><label>Subjudul</label><input type="text" id="fSub" value="' + esc(u.subjudul) + '" placeholder="Contoh: Kelas VII Semester Ganjil"></div>' +
+    '<div><label>Durasi (menit)</label><input type="number" id="fDurasi" value="' + u.durasi + '" min="1" max="600"></div>' +
+    '<div><label>Token <span class="kecil">(kosong = tanpa token)</span></label><input type="text" id="fToken" value="' + esc(u.token) + '" maxlength="12" style="text-transform:uppercase"></div></div>' +
+    '<label>Kelas peserta</label><div class="pilih-kelas">' + Object.keys(tingkat).map(function (t) {
+      return '<div class="pk-baris"><button type="button" class="btn kecil-btn" onclick="centangTingkat(\'' + t + '\')">Kelas ' + t + ' semua</button>' + tingkat[t].map(function (k) {
+        return '<label class="pk"><input type="checkbox" class="fKelas" data-t="' + t + '" value="' + k + '"' + (u.kelas.indexOf(k) >= 0 ? ' checked' : '') + '> ' + k + '</label>';
+      }).join('') + '</div>';
+    }).join('') + '</div>' +
+    '<div class="form-cek"><label><input type="checkbox" id="fAcakSoal"' + (u.acakSoal ? ' checked' : '') + '> Acak urutan soal</label>' +
+    '<label><input type="checkbox" id="fAcakPilihan"' + (u.acakPilihan ? ' checked' : '') + '> Acak pilihan jawaban</label>' +
+    '<label><input type="checkbox" id="fTampilNilai"' + (u.tampilNilai ? ' checked' : '') + '> Tampilkan nilai ke siswa setelah selesai</label>' +
+    '<label><input type="checkbox" id="fBuka"' + (u.buka ? ' checked' : '') + '> Buka ujian sekarang</label></div>' +
+    '<button class="tombol" onclick="simpanUjian(\'' + esc(kode || '') + '\')">💾 Simpan ujian</button>';
+  bukaLembar(kode ? 'Edit ujian ' + kode : 'Ujian baru', h);
+  if (!kode) $('fMapel').oninput = function () { if (!$('fKode').dataset.ubah) $('fKode').value = $('fMapel').value.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 6) + '-' + acakTeks(3).toUpperCase().replace(/[^A-Z0-9]/g, 'X'); };
+  $('fKode').oninput = function () { this.dataset.ubah = 1; };
+}
+function centangTingkat(t) {
+  var cb = document.querySelectorAll('.fKelas[data-t="' + t + '"]'), semua = [].every.call(cb, function (c) { return c.checked; });
+  cb.forEach(function (c) { c.checked = !semua; });
+}
+async function simpanUjian(kodeLama) {
+  var u = { kode: $('fKode').value.trim().toUpperCase(), mapel: $('fMapel').value.trim(), judul: $('fJudul').value.trim(), subjudul: $('fSub').value.trim(),
+    durasi: parseInt($('fDurasi').value, 10), token: $('fToken').value.trim(), acakSoal: $('fAcakSoal').checked, acakPilihan: $('fAcakPilihan').checked,
+    tampilNilai: $('fTampilNilai').checked, buka: $('fBuka').checked,
+    kelas: [].map.call(document.querySelectorAll('.fKelas:checked'), function (c) { return c.value; }) };
+  if (!u.mapel || !u.judul) return modal({ judul: 'Belum lengkap', isi: 'Isi mata pelajaran dan judul.' });
+  if (!/^[A-Z0-9-]{2,12}$/.test(u.kode)) return modal({ judul: 'Kode tidak sah', isi: 'Kode ujian 2–12 karakter: huruf, angka, atau tanda - (tanpa spasi).' });
+  if (!u.kelas.length) return modal({ judul: 'Kelas belum dipilih', isi: 'Centang minimal satu kelas peserta.' });
+  if (kodeLama && kodeLama !== u.kode) return modal({ judul: 'Kode tidak bisa diubah', isi: 'Kode ujian yang sudah dibuat tidak bisa diganti. Buat ujian baru jika perlu kode lain.' });
+  try {
+    var r = await apiUlang({ aksi: 'simpanUjian', pin: guru.pin, ujian: u, kodeLama: kodeLama || '' }, 4, 'guru');
+    if (!r.ok) return modal({ jenis: 'bahaya', judul: 'Gagal menyimpan', isi: esc(r.pesan) });
+    tutupLembar(); await muatAdmin();
+    modal({ judul: 'Tersimpan', isi: 'Ujian <b>' + esc(r.kode) + '</b> disimpan.' + (kodeLama ? '' : '<br><br>Langkah berikutnya: isi soal lewat tombol <b>Soal</b>.') });
+  } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Coba lagi.' }); }
+}
+async function ubahUjian(kode, data, pesan) {
+  try {
+    data.aksi = 'ubahUjian'; data.pin = guru.pin; data.kode = kode;
+    var r = await apiUlang(data, 4, 'guru');
+    if (!r.ok) return modal({ jenis: 'bahaya', judul: 'Gagal', isi: esc(r.pesan) });
+    await muatAdmin(); if (pesan) modal({ judul: 'Berhasil', isi: pesan });
+  } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Coba lagi.' }); }
+}
+async function bukaTutup(kode) {
+  var u = cariU(kode), keBuka = !u.buka;
+  if (keBuka && !u.jumlahSoal) return modal({ jenis: 'awas', judul: 'Soal masih kosong', isi: 'Isi soal ujian ini dulu sebelum dibuka.' });
+  var v = await modal({ jenis: keBuka ? '' : 'awas', judul: (keBuka ? 'Buka' : 'Tutup') + ' ujian ' + u.mapel + '?',
+    isi: keBuka ? 'Siswa kelas ' + esc(ringkasKelas(u.kelas)) + ' dapat masuk dan mengerjakan.' : 'Siswa baru tidak bisa masuk. Siswa yang sedang mengerjakan tetap bisa mengumpulkan.',
+    tombol: [{ teks: 'Batal', nilai: false, kelas: 'dua' }, { teks: keBuka ? 'Buka' : 'Tutup', nilai: true }] });
+  if (v === true) ubahUjian(kode, { buka: keBuka });
+}
+async function aturToken(kode) {
+  var u = cariU(kode);
+  var v = await modal({ judul: 'Token ujian ' + u.mapel, isi: '<input type="text" id="mToken" maxlength="12" value="' + esc(u.token) + '" style="text-transform:uppercase" placeholder="Kosong = tanpa token">' +
+    '<p class="kecil">Huruf/angka saja. Kosongkan untuk mematikan token.</p>',
+    tombol: [{ teks: 'Acak', nilai: 'acak', kelas: 'dua' }, { teks: 'Simpan', nilai: 'simpan' }] });
+  if (v === 'acak') { u.token = acakTeks(6).toUpperCase().replace(/[^A-Z0-9]/g, 'X'); return aturToken(kode); }
+  if (v !== 'simpan') return;
+  var t = ($('mToken') ? $('mToken').value : '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  ubahUjian(kode, { token: t }, t ? 'Token aktif: <b style="font-size:22px">' + esc(t) + '</b>' : 'Token dimatikan.');
+}
+async function hapusUjian(kode) {
+  var u = cariU(kode);
+  var v = await modal({ jenis: 'bahaya', judul: 'Hapus ujian ' + u.mapel + '?', isi: 'Ujian <b>' + esc(kode) + '</b> beserta <b>semua soalnya</b> akan dihapus. Sheet hasil nilai tetap tersimpan di spreadsheet.',
+    tombol: [{ teks: 'Batal', nilai: false, kelas: 'dua' }, { teks: 'Hapus', nilai: true, kelas: 'merah' }] });
+  if (v !== true) return;
+  try { var r = await apiUlang({ aksi: 'hapusUjian', pin: guru.pin, kode: kode }, 4, 'guru'); if (r.ok) { if (guru.soalKode === kode) guru.soalKode = ''; await muatAdmin(); } }
+  catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Coba lagi.' }); }
+}
+
+/* ---------- Lembar (panel penuh) ---------- */
+function bukaLembar(judul, html) { $('lJudul').textContent = judul; $('lIsi').innerHTML = html; $('lembar').classList.add('buka'); $('lembar').scrollTop = 0; }
+function tutupLembar() { $('lembar').classList.remove('buka'); $('lIsi').innerHTML = ''; }
+
+/* ---------- Tab Bank Soal ---------- */
+async function gantiUjianSoal() {
+  var k = $('sUjian').value;
+  if (guru.kotor && !(await konfirmasiBuang())) { $('sUjian').value = guru.soalKode; return; }
+  muatSoal(k);
+}
+async function muatSoal(kode) {
+  if (!kode) return;
+  try {
+    var r = await apiUlang({ aksi: 'ambilSoal', pin: guru.pin, kode: kode }, 4, 'guru');
+    if (!r.ok) return modal({ jenis: 'bahaya', judul: 'Gagal', isi: esc(r.pesan) });
+    guru.soalKode = kode; guru.soal = r.soal.map(function (s) { delete s.no; return s; }); guru.gambar = r.gambar || {};
+    guru.asli = JSON.stringify(guru.soal); guru.kotor = false;
+    gambarDaftarSoal(); perbaruiBarSimpan();
+  } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Coba lagi.' }); }
+}
+function tandaiKotor() { guru.kotor = JSON.stringify(guru.soal) !== guru.asli; perbaruiBarSimpan(); gambarDaftarSoal(); }
+function perbaruiBarSimpan() { $('simpanBar').style.display = guru.kotor ? 'flex' : 'none'; }
+function batalPerubahan() { guru.soal = JSON.parse(guru.asli); guru.kotor = false; perbaruiBarSimpan(); gambarDaftarSoal(); }
+var NAMA_JENIS = { PG: 'Pilihan ganda', PGK: 'PG kompleks', BS: 'Benar / Salah' };
+function masalahSoal(s) {
+  var m = [];
+  if (!s.teks && !s.pertanyaan) m.push('teks soal kosong');
+  if (s.opsi.length < 2) m.push(s.jenis === 'BS' ? 'pernyataan kurang dari 2' : 'pilihan kurang dari 2');
+  if (!s.kunci) m.push('kunci belum diisi');
+  else if (s.jenis === 'BS' && (s.kunci.split(',').length !== s.opsi.length || s.kunci.split(',').some(function (x) { return x !== 'B' && x !== 'S'; }))) m.push('kunci Benar/Salah tidak lengkap');
+  return m;
+}
+function gambarDaftarSoal() {
+  var u = cariU(guru.soalKode);
+  if (!u) { $('daftarSoal').innerHTML = ''; return; }
+  var masalah = 0;
+  var h = '<div class="baris-judul"><h3>' + esc(u.mapel + ' – ' + u.judul) + ' · ' + guru.soal.length + ' soal</h3></div>';
+  if (u.buka && guru.soal.length) h += '<div class="info kuning">Ujian ini sedang <b>DIBUKA</b>. Jangan mengubah soal saat siswa sedang mengerjakan.</div>';
+  if (!guru.soal.length) h += '<div class="kartu tengah"><p>Belum ada soal.</p><p class="kecil">Tambah soal satu per satu, atau impor dari file Word sesuai format.</p></div>';
+  h += guru.soal.map(function (s, i) {
+    var m = masalahSoal(s); if (m.length) masalah++;
+    var kunciTeks = s.jenis === 'BS' ? s.kunci.split(',').map(function (x) { return x === 'B' ? 'Benar' : x === 'S' ? 'Salah' : '?'; }).join(', ') : s.kunci;
+    return '<div class="kartu kartu-soal' + (m.length ? ' bermasalah' : '') + '"><div class="ks-atas"><b>No. ' + (i + 1) + '</b><span class="label proses">' + NAMA_JENIS[s.jenis] + '</span>' +
+      (s.acak === false ? '<span class="label">pilihan tidak diacak</span>' : '') + '<span class="kecil">Kunci: <b>' + esc(kunciTeks || '–') + '</b></span>' +
+      '<span class="ks-aksi"><button class="btn kecil-btn" onclick="geser(' + i + ',-1)" title="Naik">↑</button><button class="btn kecil-btn" onclick="geser(' + i + ',1)" title="Turun">↓</button>' +
+      '<button class="btn kecil-btn" onclick="editSoal(' + i + ')">Edit</button><button class="btn kecil-btn" onclick="duplikat(' + i + ')">Salin</button><button class="btn kecil-btn merah" onclick="hapusSoal(' + i + ')">Hapus</button></span></div>' +
+      (m.length ? '<div class="info merah kecil">⚠ ' + esc(m.join('; ')) + '</div>' : '') +
+      '<div class="ks-isi soal">' + htmlBadanSoal(s, guru.gambar) + ringkasOpsi(s) + '</div></div>';
+  }).join('');
+  if (masalah) h = '<div class="info merah">' + masalah + ' soal perlu diperbaiki (ditandai merah).</div>' + h;
+  $('daftarSoal').innerHTML = h;
+}
+function ringkasOpsi(s) {
+  var k = s.kunci.split(',');
+  return '<ol class="ks-opsi" type="' + (s.jenis === 'BS' ? '1' : 'A') + '">' + s.opsi.map(function (o, i) {
+    var benar = s.jenis === 'BS' ? '' : (k.indexOf(HURUF[i]) >= 0 ? ' class="kunci"' : '');
+    var bs = s.jenis === 'BS' ? ' <b class="' + (k[i] === 'B' ? 'tb' : 'ts') + '">(' + (k[i] === 'B' ? 'Benar' : k[i] === 'S' ? 'Salah' : '?') + ')</b>' : '';
+    return '<li' + benar + '>' + htmlTeks(o, guru.gambar) + bs + '</li>';
+  }).join('') + '</ol>';
+}
+function geser(i, d) { var j = i + d; if (j < 0 || j >= guru.soal.length) return; var x = guru.soal[i]; guru.soal[i] = guru.soal[j]; guru.soal[j] = x; tandaiKotor(); }
+function duplikat(i) { guru.soal.splice(i + 1, 0, JSON.parse(JSON.stringify(guru.soal[i]))); tandaiKotor(); }
+async function hapusSoal(i) {
+  var v = await modal({ jenis: 'bahaya', judul: 'Hapus soal no. ' + (i + 1) + '?', isi: 'Soal akan dihapus dari daftar (belum tersimpan sampai menekan Simpan).',
+    tombol: [{ teks: 'Batal', nilai: false, kelas: 'dua' }, { teks: 'Hapus', nilai: true, kelas: 'merah' }] });
+  if (v === true) { guru.soal.splice(i, 1); tandaiKotor(); }
+}
+async function simpanSoal() {
+  var bermasalah = guru.soal.filter(function (s) { return masalahSoal(s).length; }).length;
+  if (bermasalah) {
+    var v = await modal({ jenis: 'awas', judul: bermasalah + ' soal belum lengkap', isi: 'Ada soal yang kunci/pilihannya belum lengkap. Soal tanpa kunci akan dinilai salah. Tetap simpan?',
+      tombol: [{ teks: 'Perbaiki dulu', nilai: false, kelas: 'dua' }, { teks: 'Tetap simpan', nilai: true }] });
+    if (v !== true) return;
+  }
+  try {
+    var r = await apiUlang({ aksi: 'simpanSoal', pin: guru.pin, kode: guru.soalKode, soal: guru.soal }, 4, 'guru');
+    if (!r.ok) return modal({ jenis: 'bahaya', judul: 'Gagal menyimpan', isi: esc(r.pesan) });
+    guru.asli = JSON.stringify(guru.soal); guru.kotor = false; perbaruiBarSimpan();
+    var u = cariU(guru.soalKode); if (u) u.jumlahSoal = guru.soal.length; gambarDaftarUjian();
+    modal({ judul: 'Tersimpan', isi: r.jumlah + ' soal tersimpan di server.' });
+  } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Perubahan masih ada di layar. Coba tekan Simpan lagi.' }); }
+}
+
+/* ---------- Editor satu soal ---------- */
+var ed = null;   // { i, s }
+function editSoal(i) {
+  if (!guru.soalKode) return modal({ judul: 'Pilih ujian', isi: 'Buat atau pilih ujian dulu.' });
+  var s = i >= 0 ? JSON.parse(JSON.stringify(guru.soal[i])) : { jenis: 'PG', teks: '', stimulus: '', tabel: '', gambar: '', pertanyaan: '', opsi: ['', '', '', ''], kunci: '', acak: true };
+  ed = { i: i, s: s };
+  bukaLembar(i >= 0 ? 'Edit soal no. ' + (i + 1) : 'Tambah soal', '<div class="editor"><div class="ed-kiri" id="edForm"></div><div class="ed-kanan"><div class="kecil"><b>Pratinjau (tampilan siswa)</b></div><div class="pratinjau" id="edPrev"></div></div></div>');
+  gambarEditor();
+}
+function gambarEditor() {
+  var s = ed.s, h = '';
+  h += '<label>Jenis soal</label><div class="seg">' + ['PG', 'PGK', 'BS'].map(function (j) { return '<button class="' + (s.jenis === j ? 'on' : '') + '" onclick="edJenis(\'' + j + '\')">' + NAMA_JENIS[j] + '</button>'; }).join('') + '</div>';
+  h += '<label>Teks soal</label><textarea id="eTeks" rows="4" placeholder="Tulis soal di sini…">' + esc(s.teks) + '</textarea>';
+  h += '<details' + (s.stimulus || s.tabel || s.gambar || s.pertanyaan ? ' open' : '') + '><summary>Stimulus, tabel, gambar (opsional)</summary>';
+  h += '<label>Stimulus <span class="kecil">(langkah, data, kutipan — tampil dalam kotak)</span></label><textarea id="eStim" rows="3">' + esc(s.stimulus) + '</textarea>';
+  h += '<label>Tabel <span class="kecil">(pisahkan kolom dengan <b>|</b>, baris dengan Enter; baris pertama = judul kolom)</span></label><textarea id="eTabel" rows="3" placeholder="Hari | Senin | Selasa&#10;Jumlah | 12 | 8">' + esc(s.tabel) + '</textarea>';
+  h += '<label>Gambar</label><div class="ed-gbr">' + String(s.gambar || '').split(/[,\s]+/).filter(String).map(function (id) {
+    return '<div class="thumb"><img src="' + (guru.gambar[id] || '') + '"><button onclick="edHapusGbr(\'' + id + '\')">✕</button></div>';
+  }).join('') + '<button class="btn" onclick="$(\'eFileGbr\').click()">+ Tambah gambar</button><input type="file" id="eFileGbr" accept="image/*" multiple style="display:none" onchange="edTambahGbr(this)"></div>';
+  h += '<label>Pertanyaan lanjutan <span class="kecil">(tampil setelah stimulus/tabel/gambar)</span></label><textarea id="ePert" rows="2" placeholder="Contoh: Urutan langkah yang benar adalah ....">' + esc(s.pertanyaan) + '</textarea></details>';
+  var k = s.kunci ? s.kunci.split(',') : [];
+  h += '<label>' + (s.jenis === 'BS' ? 'Pernyataan & kunci (Benar/Salah)' : 'Pilihan jawaban & kunci') + '</label><div class="kecil" style="margin-bottom:6px">' +
+    (s.jenis === 'PG' ? 'Klik huruf untuk menandai <b>satu</b> kunci.' : s.jenis === 'PGK' ? 'Klik huruf untuk menandai <b>semua</b> jawaban benar.' : 'Tentukan Benar/Salah tiap pernyataan.') +
+    ' Tekan <b>🖼</b> untuk menjadikan pilihan berupa gambar.</div><input type="file" id="eFileOpsi" accept="image/*" style="display:none" onchange="edTambahGbrOpsi(this)">';
+  s.opsi.forEach(function (o, i) {
+    var tanda = s.jenis === 'BS'
+      ? '<div class="seg kecil-seg"><button class="' + (k[i] === 'B' ? 'on' : '') + '" onclick="edKunciBS(' + i + ',\'B\')">Benar</button><button class="' + (k[i] === 'S' ? 'on' : '') + '" onclick="edKunciBS(' + i + ',\'S\')">Salah</button></div>'
+      : '<button class="ed-huruf' + (k.indexOf(HURUF[i]) >= 0 ? ' on' : '') + '" onclick="edKunci(' + i + ')" title="Tandai kunci">' + HURUF[i] + '</button>';
+    var ids = (o.match(/\[gambar:([A-Za-z0-9_-]+)\]/g) || []).map(function (x) { return x.slice(8, -1); });
+    var thumbs = ids.length ? '<div class="opsi-gbr">' + ids.map(function (id) { return '<div class="thumb"><img src="' + (guru.gambar[id] || '') + '"><button onclick="edHapusGbrOpsi(' + i + ',\'' + id + '\')" title="Hapus gambar">✕</button></div>'; }).join('') + '</div>' : '';
+    h += '<div class="ed-opsi">' + (s.jenis === 'BS' ? '<b style="padding-top:10px">' + (i + 1) + '.</b>' : tanda) +
+      '<div class="ed-opsi-isi"><textarea rows="1" class="eOpsi" data-i="' + i + '" placeholder="' + (ids.length ? 'Teks tambahan (boleh kosong)' : 'Ketik pilihan, atau tekan 🖼 untuk gambar') + '">' + esc(o.replace(/\s*\[gambar:[A-Za-z0-9_-]+\]\s*/g, ' ').trim()) + '</textarea>' + thumbs + '</div>' +
+      '<button class="btn kecil-btn" onclick="edGbrOpsi(' + i + ')" title="Tambah gambar pada pilihan ini">🖼</button>' +
+      (s.jenis === 'BS' ? tanda : '') + (s.opsi.length > 2 ? '<button class="btn kecil-btn merah" onclick="edHapusOpsi(' + i + ')">✕</button>' : '') + '</div>';
+  });
+  if (s.opsi.length < 5) h += '<button class="btn" onclick="edTambahOpsi()">+ Tambah ' + (s.jenis === 'BS' ? 'pernyataan' : 'pilihan') + '</button>';
+  if (s.jenis !== 'BS') h += '<label class="cek" style="font-weight:400"><input type="checkbox" id="eAcak"' + (s.acak !== false ? ' checked' : '') + '> Pilihan soal ini boleh diacak <span class="kecil">(matikan jika pilihan berupa "Poster A", "semua benar", dll.)</span></label>';
+  h += '<div class="ed-bawah"><button class="btn" onclick="tutupLembar()">Batal</button><button class="btn isi" onclick="edSelesai()">✓ Simpan soal ini</button></div>';
+  $('edForm').innerHTML = h;
+  $('edForm').querySelectorAll('textarea,input[type=checkbox]').forEach(function (el) { el.addEventListener('input', edBaca); el.addEventListener('change', edBaca); });
+  edPreview();
+}
+function edBaca() {
+  var s = ed.s;
+  s.teks = $('eTeks').value; s.stimulus = $('eStim').value; s.tabel = $('eTabel').value; s.pertanyaan = $('ePert').value;
+  document.querySelectorAll('.eOpsi').forEach(function (t) {
+    var i = +t.dataset.i, tok = (String(s.opsi[i] || '').match(/\[gambar:[A-Za-z0-9_-]+\]/g) || []).join(' ');
+    s.opsi[i] = (t.value.trim() + (tok ? (t.value.trim() ? ' ' : '') + tok : ''));
+  });
+  if ($('eAcak')) s.acak = $('eAcak').checked;
+  edPreview();
+}
+function edPreview() {
+  var s = ed.s;
+  $('edPrev').innerHTML = '<div class="soal">' + htmlBadanSoal(s, guru.gambar) + '</div>' + (PETUNJUK_JENIS[s.jenis] ? '<div class="petunjuk-jenis">' + PETUNJUK_JENIS[s.jenis] + '</div>' : '') +
+    htmlPilihan(s, urutan(s.opsi.length), s.jenis === 'PG' ? HURUF.indexOf(s.kunci) : s.jenis === 'PGK' ? s.kunci.split(',').map(function (x) { return HURUF.indexOf(x); }) : s.kunci.split(','), guru.gambar, 'void');
+}
+function edJenis(j) { edBaca(); if (ed.s.jenis !== j) { ed.s.jenis = j; ed.s.kunci = ''; } gambarEditor(); }
+function edKunci(i) {
+  edBaca(); var s = ed.s, h = HURUF[i];
+  if (s.jenis === 'PG') s.kunci = s.kunci === h ? '' : h;
+  else { var k = s.kunci ? s.kunci.split(',') : []; var p = k.indexOf(h); if (p >= 0) k.splice(p, 1); else k.push(h); s.kunci = k.sort().join(','); }
+  gambarEditor();
+}
+function edKunciBS(i, v) {
+  edBaca(); var k = ed.s.kunci ? ed.s.kunci.split(',') : [];
+  for (var j = 0; j < ed.s.opsi.length; j++) if (!k[j]) k[j] = '?';
+  k[i] = v; ed.s.kunci = k.slice(0, ed.s.opsi.length).join(','); gambarEditor();
+}
+function edTambahOpsi() { edBaca(); ed.s.opsi.push(''); gambarEditor(); }
+function edHapusOpsi(i) {
+  edBaca(); var s = ed.s;
+  if (s.jenis === 'BS') { var k = s.kunci.split(','); k.splice(i, 1); s.kunci = k.join(','); }
+  else s.kunci = s.kunci.split(',').filter(String).map(function (x) { var n = HURUF.indexOf(x); return n === i ? null : HURUF[n > i ? n - 1 : n]; }).filter(Boolean).join(',');
+  s.opsi.splice(i, 1); gambarEditor();
+}
+async function edTambahGbr(inp) {
+  edBaca();
+  for (var f of [].slice.call(inp.files)) {
+    try {
+      var data = await kompres(await bacaFile(f));
+      var id = await unggahGambar(data, f.name);
+      if (id) ed.s.gambar = (ed.s.gambar ? ed.s.gambar + ',' : '') + id;
+    } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal mengunggah gambar', isi: esc(e.message || e) }); }
+  }
+  inp.value = ''; gambarEditor();
+}
+var gbrOpsiIdx = -1;
+function edGbrOpsi(i) { edBaca(); gbrOpsiIdx = i; $('eFileOpsi').click(); }
+async function edTambahGbrOpsi(inp) {
+  var f = inp.files[0]; inp.value = '';
+  if (!f || gbrOpsiIdx < 0) return;
+  try {
+    var data = await kompres(await bacaFile(f));
+    var id = await unggahGambar(data, 'pilihan ' + HURUF[gbrOpsiIdx]);
+    var o = String(ed.s.opsi[gbrOpsiIdx] || '').trim();
+    ed.s.opsi[gbrOpsiIdx] = (o ? o + ' ' : '') + '[gambar:' + id + ']';
+  } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal mengunggah gambar', isi: esc(e.message || e) }); }
+  gambarEditor();
+}
+function edHapusGbrOpsi(i, id) {
+  edBaca();
+  ed.s.opsi[i] = String(ed.s.opsi[i]).replace('[gambar:' + id + ']', '').replace(/\s+/g, ' ').trim();
+  gambarEditor();
+}
+function edHapusGbr(id) { edBaca(); ed.s.gambar = ed.s.gambar.split(',').filter(function (x) { return x !== id; }).join(','); gambarEditor(); }
+function edSelesai() {
+  edBaca();
+  var s = ed.s;
+  s.opsi = s.opsi.map(function (o) { return o.trim(); });
+  var bersih = s.opsi.filter(String);
+  if (bersih.length !== s.opsi.length) return modal({ judul: 'Pilihan kosong', isi: 'Isi semua kotak pilihan, atau hapus kotak yang tidak dipakai (tombol ✕).' });
+  if (s.jenis === 'BS') { var kb = s.kunci ? s.kunci.split(',') : []; s.kunci = s.opsi.map(function (o, i) { return kb[i] === 'B' || kb[i] === 'S' ? kb[i] : '?'; }).join(','); if (!/[BS]/.test(s.kunci)) s.kunci = ''; }
+  if (ed.i >= 0) guru.soal[ed.i] = s; else guru.soal.push(s);
+  tutupLembar(); tandaiKotor();
+  var m = masalahSoal(s);
+  if (m.length) modal({ jenis: 'awas', judul: 'Soal disimpan, tapi belum lengkap', isi: esc(m.join('; ')) });
+}
+function bacaFile(f) { return new Promise(function (ok, gagal) { var r = new FileReader(); r.onload = function () { ok(r.result); }; r.onerror = gagal; r.readAsDataURL(f); }); }
+function kompres(dataURL) {
+  return new Promise(function (ok, gagal) {
+    var img = new Image();
+    img.onload = function () {
+      var maks = 900, q = 0.85, out = '';
+      for (var coba = 0; coba < 12; coba++) {
+        var sk = Math.min(1, maks / Math.max(img.width, img.height));
+        var c = document.createElement('canvas'); c.width = Math.round(img.width * sk); c.height = Math.round(img.height * sk);
+        var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+        out = c.toDataURL('image/jpeg', q);
+        if (out.length <= 45000) return ok(out);
+        if (q > 0.55) q -= 0.1; else maks = Math.round(maks * 0.8);
+      }
+      gagal(new Error('Gambar terlalu besar.'));
+    };
+    img.onerror = function () { gagal(new Error('File bukan gambar yang didukung (gunakan JPG/PNG).')); };
+    img.src = dataURL;
+  });
+}
+async function unggahGambar(data, ket) {
+  var r = await apiUlang({ aksi: 'simpanGambar', pin: guru.pin, data: data, ket: ket || '' }, 4, 'guru');
+  if (!r.ok) throw new Error(r.pesan);
+  guru.gambar[r.id] = data; return r.id;
+}
+
+/* ---------- Pratinjau seperti siswa ---------- */
+function pratinjauSiswa() {
+  if (!guru.soal.length) return modal({ judul: 'Belum ada soal', isi: 'Tambahkan soal dulu.' });
+  var h = '<div class="pratinjau-hp">' + guru.soal.map(function (s, i) {
+    return '<div class="kartu"><div class="soal-label"><span>Soal nomor ' + (i + 1) + '</span></div><div class="soal">' + htmlBadanSoal(s, guru.gambar) + '</div>' +
+      (PETUNJUK_JENIS[s.jenis] ? '<div class="petunjuk-jenis">' + PETUNJUK_JENIS[s.jenis] + '</div>' : '') + htmlPilihan(s, urutan(s.opsi.length), null, guru.gambar, 'void') + '</div>';
+  }).join('') + '</div>';
+  bukaLembar('Pratinjau siswa (tanpa acak)', h);
+}
+
+/* ---------- Format & impor Word ---------- */
+function unduhFormat() {
+  var a = document.createElement('a'); a.href = FILE_FORMAT_WORD; a.download = FILE_FORMAT_WORD;
+  fetch(FILE_FORMAT_WORD, { method: 'HEAD' }).then(function (r) {
+    if (r.ok) { document.body.appendChild(a); a.click(); a.remove(); }
+    else modal({ judul: 'File format belum diunggah', isi: 'Unggah file <b>' + esc(FILE_FORMAT_WORD) + '</b> ke repositori GitHub yang sama dengan index.html agar bisa diunduh dari sini.' });
+  }).catch(function () { modal({ judul: 'File format tidak ditemukan', isi: 'Unggah file <b>' + esc(FILE_FORMAT_WORD) + '</b> ke repositori GitHub yang sama dengan index.html.' }); });
+}
+
+async function imporWord(inp) {
+  var f = inp.files[0]; inp.value = '';
+  if (!f) return;
+  if (!guru.soalKode) return modal({ judul: 'Pilih ujian', isi: 'Pilih ujian tujuan dulu.' });
+  if (!/\.docx$/i.test(f.name)) return modal({ jenis: 'bahaya', judul: 'Bukan file .docx', isi: 'Simpan file Word sebagai <b>.docx</b> (Word 2007 ke atas), lalu coba lagi.' });
+  overlay('Membaca file Word…');
+  var hasil;
+  try { hasil = urai(await bacaDocx(await f.arrayBuffer())); }
+  catch (e) { tutupOverlay(); return modal({ jenis: 'bahaya', judul: 'Gagal membaca file', isi: esc(e.message || e) }); }
+  tutupOverlay();
+  window._impor = hasil;
+  var h = '<div class="info">Ditemukan <b>' + hasil.soal.length + ' soal</b> dari <b>' + esc(f.name) + '</b>' +
+    (Object.keys(hasil.gambar).length ? ' dengan ' + Object.keys(hasil.gambar).length + ' gambar' : '') + '. Periksa hasilnya, lalu pilih cara memasukkan.</div>';
+  if (hasil.peringatan.length) h += '<div class="info kuning"><b>Perlu diperiksa:</b><ul>' + hasil.peringatan.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul></div>';
+  h += '<div class="ed-bawah" style="justify-content:flex-start"><button class="btn isi" onclick="terapkanImpor(false)">Tambahkan di akhir (' + guru.soal.length + ' soal lama tetap)</button><button class="btn merah" onclick="terapkanImpor(true)">Ganti semua soal lama</button></div>';
+  h += hasil.soal.map(function (s, i) {
+    var m = masalahSoal(s);
+    return '<div class="kartu kartu-soal' + (m.length ? ' bermasalah' : '') + '"><div class="ks-atas"><b>No. ' + (i + 1) + '</b><span class="label proses">' + NAMA_JENIS[s.jenis] + '</span><span class="kecil">Kunci: <b>' + esc(s.kunci || '–') + '</b></span></div>' +
+      (m.length ? '<div class="info merah kecil">⚠ ' + esc(m.join('; ')) + '</div>' : '') +
+      '<div class="ks-isi soal">' + htmlBadanSoal(s, hasil.gambar) + ringkasOpsiImpor(s, hasil.gambar) + '</div></div>';
+  }).join('');
+  bukaLembar('Impor soal dari Word', h);
+}
+function ringkasOpsiImpor(s, gb) { var g = guru.gambar; guru.gambar = Object.assign({}, g, gb); var h = ringkasOpsi(s); guru.gambar = g; return h; }
+async function terapkanImpor(ganti) {
+  var hasil = window._impor; if (!hasil) return;
+  if (ganti && guru.soal.length) {
+    var v = await modal({ jenis: 'bahaya', judul: 'Ganti semua soal?', isi: guru.soal.length + ' soal lama akan diganti dengan ' + hasil.soal.length + ' soal dari Word.',
+      tombol: [{ teks: 'Batal', nilai: false, kelas: 'dua' }, { teks: 'Ganti', nilai: true, kelas: 'merah' }] });
+    if (v !== true) return;
+  }
+  // unggah gambar satu per satu, ganti ID sementara dengan ID server
+  var peta = {}, ids = Object.keys(hasil.gambar), i = 0;
+  try {
+    for (var id of ids) {
+      i++; overlay('Mengunggah gambar ' + i + ' dari ' + ids.length + '…');
+      var data = await kompres(hasil.gambar[id]);
+      var r = await api({ aksi: 'simpanGambar', pin: guru.pin, data: data, ket: 'impor Word' });
+      if (!r.ok) throw new Error(r.pesan);
+      peta[id] = r.id; guru.gambar[r.id] = data;
+    }
+  } catch (e) { tutupOverlay(); return modal({ jenis: 'bahaya', judul: 'Gagal mengunggah gambar', isi: esc(e.message || e) + '<br>Coba impor lagi.' }); }
+  tutupOverlay();
+  var ganti2 = function (t) { return String(t || '').replace(/tmp\d+/g, function (m) { return peta[m] || m; }); };
+  var baru = hasil.soal.map(function (s) {
+    return { jenis: s.jenis, teks: ganti2(s.teks), stimulus: ganti2(s.stimulus), tabel: ganti2(s.tabel), gambar: ganti2(s.gambar),
+             pertanyaan: ganti2(s.pertanyaan), opsi: s.opsi.map(ganti2), kunci: s.kunci, acak: s.acak };
+  });
+  guru.soal = ganti ? baru : guru.soal.concat(baru);
+  window._impor = null; tutupLembar(); tandaiKotor();
+  modal({ judul: 'Soal dimasukkan', isi: baru.length + ' soal masuk ke daftar. Periksa sebentar, lalu tekan <b>💾 Simpan ke server</b>.' });
+}
+
+/* ---- Pembaca .docx (tanpa library luar) ---- */
+async function bacaDocx(ab) {
+  var buf = new Uint8Array(ab), dv = new DataView(ab), eocd = -1;
+  for (var i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('File bukan dokumen Word (.docx) yang sah.');
+  var jumlah = dv.getUint16(eocd + 10, true), p = dv.getUint32(eocd + 16, true), isi = {}, dec = new TextDecoder();
+  for (var k = 0; k < jumlah; k++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) break;
+    var met = dv.getUint16(p + 10, true), uk = dv.getUint32(p + 20, true), nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lho = dv.getUint32(p + 42, true);
+    isi[dec.decode(buf.subarray(p + 46, p + 46 + nl))] = { met: met, uk: uk, lho: lho };
+    p += 46 + nl + el + cl;
+  }
+  async function ambil(nama) {
+    var e = isi[nama]; if (!e) return null;
+    var s = e.lho + 30 + dv.getUint16(e.lho + 26, true) + dv.getUint16(e.lho + 28, true), data = buf.subarray(s, s + e.uk);
+    if (e.met === 0) return data;
+    var st = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return new Uint8Array(await new Response(st).arrayBuffer());
+  }
+  var xmlDoc = await ambil('word/document.xml');
+  if (!xmlDoc) throw new Error('Isi dokumen tidak ditemukan.');
+  var parser = new DOMParser(), doc = parser.parseFromString(dec.decode(xmlDoc), 'application/xml');
+  // relasi gambar
+  var rels = {}, relX = await ambil('word/_rels/document.xml.rels');
+  if (relX) [].forEach.call(parser.parseFromString(dec.decode(relX), 'application/xml').getElementsByTagName('Relationship'), function (r) { rels[r.getAttribute('Id')] = r.getAttribute('Target'); });
+  // format penomoran otomatis
+  var fmt = {}, numX = await ambil('word/numbering.xml');
+  if (numX) {
+    var nd = parser.parseFromString(dec.decode(numX), 'application/xml'), abs = {};
+    [].forEach.call(nd.getElementsByTagName('w:abstractNum'), function (a) {
+      var lv = {}; [].forEach.call(a.getElementsByTagName('w:lvl'), function (l) { var f = l.getElementsByTagName('w:numFmt')[0]; lv[l.getAttribute('w:ilvl')] = f ? f.getAttribute('w:val') : ''; });
+      abs[a.getAttribute('w:abstractNumId')] = lv;
+    });
+    [].forEach.call(nd.getElementsByTagName('w:num'), function (n) { var a = n.getElementsByTagName('w:abstractNumId')[0]; fmt[n.getAttribute('w:numId')] = a ? abs[a.getAttribute('w:val')] || {} : {}; });
+  }
+  var gambar = {}, nGbr = 0, tak = [];
+  async function gbr(rid) {
+    var t = rels[rid]; if (!t) return '';
+    var path = t.indexOf('/') === 0 ? t.substring(1) : 'word/' + t.replace(/^\.\//, '');
+    var ext = (path.split('.').pop() || '').toLowerCase(), mime = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', bmp: 'image/bmp', webp: 'image/webp' }[ext];
+    if (!mime) { tak.push(ext); return ''; }
+    var b = await ambil(path); if (!b) return '';
+    var s = ''; for (var i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000));
+    var id = 'tmp' + (nGbr++); gambar[id] = 'data:' + mime + ';base64,' + btoa(s); return id;
+  }
+  async function teksPar(el) {
+    var t = '';
+    async function jalan(n) {
+      for (var c = n.firstChild; c; c = c.nextSibling) {
+        if (c.nodeType !== 1) continue;
+        var nm = c.nodeName;
+        if (nm === 'w:del' || nm === 'mc:Fallback' || nm === 'w:instrText' || nm === 'w:pPr' || nm === 'w:rPr') continue;
+        if (nm === 'w:t') t += c.textContent;
+        else if (nm === 'w:tab') t += '\t';
+        else if (nm === 'w:br' || nm === 'w:cr') t += '\n';
+        else if (nm === 'a:blip') { var id = await gbr(c.getAttribute('r:embed')); if (id) t += ' [gambar:' + id + '] '; }
+        else if (nm === 'v:imagedata') { var id2 = await gbr(c.getAttribute('r:id')); if (id2) t += ' [gambar:' + id2 + '] '; }
+        else await jalan(c);
+      }
+    }
+    await jalan(el);
+    return t;
+  }
+  var item = [], body = doc.getElementsByTagName('w:body')[0];
+  for (var el = body.firstChild; el; el = el.nextSibling) {
+    if (el.nodeName === 'w:p') {
+      var np = el.getElementsByTagName('w:numPr')[0], daftar = null;
+      if (np) {
+        var nid = np.getElementsByTagName('w:numId')[0], il = np.getElementsByTagName('w:ilvl')[0];
+        var f = (fmt[nid ? nid.getAttribute('w:val') : ''] || {})[il ? il.getAttribute('w:val') : '0'] || '';
+        daftar = /letter/i.test(f) ? 'huruf' : (/decimal/i.test(f) ? 'angka' : null);
+      }
+      item.push({ j: 'p', t: (await teksPar(el)).replace(/ /g, ' '), daftar: daftar });
+    } else if (el.nodeName === 'w:tbl') {
+      var rows = [];
+      for (var tr of [].slice.call(el.getElementsByTagName('w:tr'))) {
+        var cells = [];
+        for (var tc of [].slice.call(tr.getElementsByTagName('w:tc'))) {
+          var ps = []; for (var pp of [].slice.call(tc.getElementsByTagName('w:p'))) ps.push((await teksPar(pp)).trim());
+          cells.push(ps.filter(String).join(' ').replace(/\s+/g, ' ').replace(/\|/g, '/'));
+        }
+        rows.push(cells);
+      }
+      item.push({ j: 't', rows: rows });
+    }
+  }
+  return { item: item, gambar: gambar, tak: tak };
+}
+
+/* Mengurai isi Word menjadi soal. Aturan: soal diawali nomor (1. / 1) / penomoran otomatis),
+   pilihan diawali A. B. C. D. E., lalu baris "Kunci: ..." menutup soal. */
+function urai(d) {
+  var soal = [], peringatan = [], cur = null, adaKunci = false;
+  var reNo = /^\s*(\d{1,3})\s*[.)]\s*/, reOpsi = /^\s*([A-Ea-e])\s*[.)]\s+/, reKunci = /^\s*kunci(\s*jawaban)?\s*[:=]\s*(.*)$/i;
+  function baru(t) { cur = { blok: [], opsi: [], kunciMentah: null, label: soal.length + 1 }; soal.push(cur); if (t) cur.blok.push({ p: t }); }
+  d.item.forEach(function (it) {
+    if (it.j === 't') {
+      var tab = it.rows.map(function (r) { return r.join(' | '); }).join('\n');
+      if (!cur) return;
+      if (cur.opsi.length) { peringatan.push('Tabel setelah pilihan jawaban pada soal ' + cur.label + ' diabaikan.'); return; }
+      cur.blok.push({ tabel: tab }); return;
+    }
+    var t = it.t.replace(/\s+$/, ''), polos = t.replace(/\[gambar:tmp\d+\]/g, '').trim();
+    if (!t.trim()) return;
+    var mk = t.match(reKunci);
+    if (mk) { if (cur) { cur.kunciMentah = mk[2]; adaKunci = true; cur = null; cur = undefined; } return; }
+    var mNo = t.match(reNo);
+    var awalSoal = (mNo && !reOpsi.test(t)) || it.daftar === 'angka';
+    if (cur === null && !awalSoal && soal.length === 0) return;                     // judul/petunjuk sebelum soal 1
+    if (cur === undefined) { baru(t.replace(reNo, '')); return; }                    // setelah "Kunci:", baris berikutnya = soal baru
+    if (cur === null) { if (awalSoal) baru(t.replace(reNo, '')); return; }
+    var mo = t.match(reOpsi);
+    if (mo || it.daftar === 'huruf') { cur.opsi.push((mo ? t.replace(reOpsi, '') : t).trim()); return; }
+    if (!cur.opsi.length && awalSoal && !adaKunci) { baru(t.replace(reNo, '')); return; }   // mis. petunjuk bernomor sebelum soal 1
+    if (cur.opsi.length) {
+      if (awalSoal && !adaKunci) { baru(t.replace(reNo, '')); return; }              // file tanpa baris Kunci
+      cur.opsi[cur.opsi.length - 1] += '\n' + t.trim(); return;
+    }
+    if (!polos && /\[gambar:/.test(t)) cur.blok.push({ gambar: (t.match(/tmp\d+/g) || []).join(',') });
+    else cur.blok.push({ p: t.trim() });
+  });
+  if (d.tak.length) peringatan.push('Ada gambar berformat ' + d.tak.filter(function (x, i, a) { return a.indexOf(x) === i; }).join(', ') + ' yang tidak bisa dibaca (gunakan gambar JPG/PNG).');
+  var hasil = [];
+  soal.forEach(function (c) {
+    if (c.opsi.length < 2) { if (c.blok.length) peringatan.push('Bagian "' + String((c.blok[0].p || '…')).substring(0, 50) + '" dilewati karena tidak punya pilihan jawaban.'); return; }
+    var s = { jenis: 'PG', teks: '', stimulus: '', tabel: '', gambar: '', pertanyaan: '', opsi: c.opsi.slice(0, 5), kunci: '', acak: true };
+    if (c.opsi.length > 5) peringatan.push('Soal ' + (hasil.length + 1) + ': lebih dari 5 pilihan, hanya A–E yang dipakai.');
+    var ps = c.blok.filter(function (b) { return b.p != null; });
+    var akhir = ps.length > 1 ? ps[ps.length - 1] : null, stim = [];
+    c.blok.forEach(function (b, i) {
+      if (b.tabel) s.tabel = s.tabel ? s.tabel + '\n' + b.tabel : b.tabel;
+      else if (b.gambar) s.gambar = s.gambar ? s.gambar + ',' + b.gambar : b.gambar;
+      else if (b === ps[0]) s.teks = b.p;
+      else if (b === akhir) s.pertanyaan = b.p;
+      else stim.push(b.p);
+    });
+    s.stimulus = stim.join('\n');
+    var k = String(c.kunciMentah || '');
+    if (/jangan\s*(di)?acak|tidak\s*(di)?acak/i.test(k)) { s.acak = false; k = k.replace(/[(|,;-]*\s*(jangan|tidak)\s*(di)?acak\s*\)?/i, ''); }
+    if (/benar|salah/i.test(k)) { s.jenis = 'BS'; s.kunci = (k.match(/benar|salah/gi) || []).map(function (x) { return x.charAt(0).toUpperCase(); }).slice(0, s.opsi.length).join(','); }
+    else {
+      var h = (k.toUpperCase().match(/\b[A-E]\b/g) || []).filter(function (x, i, a) { return a.indexOf(x) === i && HURUF.indexOf(x) < s.opsi.length; }).sort();
+      if (h.length > 1) { s.jenis = 'PGK'; s.kunci = h.join(','); } else s.kunci = h[0] || '';
+    }
+    if (!s.kunci) peringatan.push('Soal ' + (hasil.length + 1) + ': kunci belum ada' + (c.kunciMentah ? ' / tidak terbaca ("' + c.kunciMentah + '")' : '') + '.');
+    hasil.push(s);
+  });
+  return { soal: hasil, gambar: d.gambar, peringatan: peringatan };
+}
+
+/* ---------- Tab Rekap ---------- */
+async function muatRekap(diam) {
+  var kode = $('rUjian').value; if (!kode || guru.sibuk) return;
+  guru.sibuk = true;
+  try {
+    var r = diam ? await api({ aksi: 'rekap', pin: guru.pin, kode: kode }) : await apiUlang({ aksi: 'rekap', pin: guru.pin, kode: kode }, 4, 'guru');
+    if (r && r.ok) { guru.rekap = r; isiFilterKelas(); gambarRekap(); $('gWaktu').textContent = jam(); }
+    else if (!diam && r) modal({ jenis: 'bahaya', judul: 'Gagal memuat', isi: esc(r.pesan) });
+  } catch (e) { if (!diam) modal({ jenis: 'bahaya', judul: 'Gagal memuat', isi: 'Server tidak bisa dihubungi.' }); }
+  guru.sibuk = false;
+}
+function isiFilterKelas() {
+  var u = guru.rekap.ujian || cariU(guru.rekap.kode) || { kelas: [] };
+  var kelas = u.kelas.slice(); guru.rekap.data.forEach(function (d) { if (kelas.indexOf(d.kelas) < 0) kelas.push(d.kelas); });
+  var f = ''; try { f = JSON.parse(localStorage.getItem(KUNCI_FILTER) || '{}')[guru.rekap.kode] || ''; } catch (e) {}
+  $('gKelas').innerHTML = '<option value="">Semua kelas</option>' + kelas.map(function (k) { return '<option>' + esc(k) + '</option>'; }).join('');
+  $('gKelas').value = kelas.indexOf(f) >= 0 ? f : '';
+}
+function ubahFilter(gantiUjian) {
+  if (gantiUjian) return muatRekap();
+  try { var m = JSON.parse(localStorage.getItem(KUNCI_FILTER) || '{}'); m[$('rUjian').value] = $('gKelas').value; localStorage.setItem(KUNCI_FILTER, JSON.stringify(m)); } catch (e) {}
+  gambarRekap();
+}
+function statusJenis(s) { return /Dikeluarkan/.test(s) ? 'keluar' : (/^Selesai/.test(s) ? 'selesai' : 'proses'); }
+function dataTersaring() {
+  if (!guru.rekap) return [];
+  var k = $('gKelas').value, c = $('gCari').value.trim().toLowerCase();
+  return guru.rekap.data.filter(function (d) { return (!k || d.kelas === k) && (!c || String(d.nama).toLowerCase().indexOf(c) >= 0); })
+    .sort(function (a, b) { return a.kelas === b.kelas ? Number(a.absen) - Number(b.absen) : (a.kelas < b.kelas ? -1 : 1); });
+}
+function gambarRekap() {
+  if (!guru.rekap) return;
+  var d = dataTersaring(), dinilai = d.filter(function (x) { return statusJenis(x.status) !== 'proses'; });
+  var nilai = dinilai.map(function (x) { return Number(x.nilai) || 0; });
+  var rata = nilai.length ? nilai.reduce(function (a, b) { return a + b; }, 0) / nilai.length : 0;
+  var kartu = [['Peserta', d.length], ['Selesai', d.filter(function (x) { return statusJenis(x.status) === 'selesai'; }).length],
+    ['Sedang mengerjakan', d.filter(function (x) { return statusJenis(x.status) === 'proses'; }).length], ['Dikeluarkan', d.filter(function (x) { return statusJenis(x.status) === 'keluar'; }).length],
+    ['Rata-rata', nilai.length ? angka(rata) : '-'], ['Tertinggi', nilai.length ? angka(Math.max.apply(null, nilai)) : '-'],
+    ['Terendah', nilai.length ? angka(Math.min.apply(null, nilai)) : '-'], ['Nilai ≥ 75', nilai.filter(function (v) { return v >= 75; }).length]];
+  $('gRingkas').innerHTML = kartu.map(function (k) { return '<div><span>' + k[0] + '</span><b>' + k[1] + '</b></div>'; }).join('');
+  $('gTabel').innerHTML = d.length ? d.map(function (x, i) {
+    var j = statusJenis(x.status), p = j === 'proses';
+    return '<tr class="' + (j === 'keluar' ? 'keluar' : '') + '"><td class="n">' + (i + 1) + '</td><td>' + esc(x.nama) + '</td><td class="n">' + esc(x.kelas) + '</td><td class="n">' + esc(x.absen) +
+      '</td><td><span class="label ' + j + '">' + esc(x.status) + '</span></td><td class="n">' + esc(x.pel) + '</td><td class="n">' + (p ? '' : esc(x.benar)) + '</td><td class="n">' + (p ? '' : esc(x.salah)) +
+      '</td><td class="n">' + (p ? '' : esc(x.kosong)) + '</td><td class="n"><b>' + (p ? '' : angka(x.nilai)) + '</b></td><td>' + (x.selesai ? tgl(x.selesai) : '') +
+      '</td><td><button class="btn kecil-btn merah" onclick="izinkanUlang(\'' + esc(x.id) + '\')">Izinkan ulang</button></td></tr>';
+  }).join('') : '<tr><td colspan="12" class="tengah" style="padding:20px;color:var(--abu)">Belum ada data.</td></tr>';
+  var n = guru.rekap.jumlahSoal, hb = '';
+  $('gButirInfo').textContent = 'Berdasarkan ' + dinilai.length + ' siswa yang sudah selesai/dikeluarkan' + ($('gKelas').value ? ' di kelas ' + $('gKelas').value : '') + '. Nomor sesuai urutan di Bank Soal.';
+  for (var i = 0; i < n; i++) {
+    if (!dinilai.length) { hb += '<div class="x">No ' + (i + 1) + '<b>–</b></div>'; continue; }
+    var b = dinilai.filter(function (x) { return x.s && x.s.charAt(i) === '1'; }).length, pc = b / dinilai.length * 100;
+    hb += '<div class="' + (pc < 50 ? 'm' : pc < 75 ? 'k' : 'h') + '">No ' + (i + 1) + '<b>' + Math.round(pc) + '%</b>' + b + '/' + dinilai.length + '</div>';
+  }
+  $('gButir').innerHTML = hb;
+}
+async function izinkanUlang(id) {
+  var x = guru.rekap.data.filter(function (d) { return d.id === id; })[0]; if (!x) return;
+  var v = await modal({ jenis: 'bahaya', judul: 'Izinkan mengulang?', isi: 'Hasil <b>' + esc(x.nama) + '</b> (' + esc(x.kelas) + ', absen ' + esc(x.absen) + ') akan <b>dihapus</b>. Siswa bisa mengerjakan ulang dari awal.',
+    tombol: [{ teks: 'Batal', nilai: false, kelas: 'dua' }, { teks: 'Ya, hapus', nilai: true, kelas: 'merah' }] });
+  if (v !== true) return;
+  try {
+    var r = await apiUlang({ aksi: 'hapus', pin: guru.pin, kode: guru.rekap.kode, id: id }, 4, 'guru');
+    if (!r.ok) return modal({ jenis: 'bahaya', judul: 'Gagal', isi: esc(r.pesan) });
+    guru.rekap.data = guru.rekap.data.filter(function (d) { return d.id !== id; }); gambarRekap();
+    modal({ judul: 'Berhasil', isi: esc(x.nama) + ' sekarang boleh mengerjakan ulang.' });
+  } catch (e) { modal({ jenis: 'bahaya', judul: 'Gagal terhubung', isi: 'Coba lagi.' }); }
+}
+function unduhCSV() {
+  if (!guru.rekap) return;
+  var d = dataTersaring(), n = guru.rekap.jumlahSoal;
+  var kepala = ['No', 'Nama', 'Kelas', 'No Absen', 'Status', 'Pelanggaran', 'Benar', 'Salah', 'Kosong', 'Nilai', 'Mulai', 'Selesai', 'Durasi', 'Catatan Pelanggaran'];
+  for (var i = 1; i <= n; i++) kepala.push('S' + i);
+  var sel = function (v) { v = String(v == null ? '' : v); return /[";\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  var baris = [kepala.join(';')];
+  d.forEach(function (x, idx) {
+    var p = statusJenis(x.status) === 'proses';
+    var r = [idx + 1, x.nama, x.kelas, x.absen, x.status, x.pel, p ? '' : x.benar, p ? '' : x.salah, p ? '' : x.kosong, p ? '' : angka(x.nilai), tgl(x.mulai), tgl(x.selesai), x.durasi, x.catatan];
+    for (var i = 0; i < n; i++) r.push(p ? '' : (x.s ? x.s.charAt(i) : ''));
+    baris.push(r.map(sel).join(';'));
+  });
+  var blob = new Blob(['﻿' + baris.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  var a = document.createElement('a'), t = new Date();
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Rekap_' + guru.rekap.kode + '_' + ($('gKelas').value || 'Semua') + '_' + t.getFullYear() + pad(t.getMonth() + 1) + pad(t.getDate()) + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+}
+async function hapusDataHP() {
+  var s = muatSesi();
+  if (!s) return modal({ judul: 'Kosong', isi: 'Tidak ada data ujian di perangkat ini.' });
+  var bahaya = s.status === 'mengirim' || s.status === 'mengerjakan';
+  var v = await modal({ jenis: 'bahaya', judul: 'Hapus data di perangkat ini?',
+    isi: 'Data ujian <b>' + esc(s.nama) + '</b> (' + esc(s.kelas) + ', absen ' + s.absen + ', status: ' + esc(s.status) + ') akan dihapus dari perangkat ini.' + (bahaya ? '<br><br><b style="color:var(--merah)">Jawaban siswa ini BELUM terkirim dan akan hilang.</b>' : ''),
+    tombol: [{ teks: 'Batal', nilai: false, kelas: 'dua' }, { teks: 'Hapus', nilai: true, kelas: 'merah' }] });
+  if (v === true) { try { localStorage.removeItem(KUNCI_SESI); } catch (e) {} modal({ judul: 'Terhapus', isi: 'Data ujian di perangkat ini sudah dihapus.' }); }
+}
+
+/* =====================================================================
+   MULAI
+   ===================================================================== */
+(function () {
+  $('tSekolah').textContent = SEKOLAH;
+  if (!API_URL) { tampil('layarPasang'); return; }
+  var s = muatSesi();
+  if (s && s.status === 'mengirim') return lanjutkan(s);
+  if (s && s.status === 'mengerjakan' && s.dikeluarkan) return lanjutkan(s);
+  keAwal();
+})();
+</script>
+</body>
+</html>
